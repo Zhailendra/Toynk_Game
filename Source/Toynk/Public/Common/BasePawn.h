@@ -27,6 +27,8 @@ class TOYNK_API ABasePawn : public APawn
 		
 	private:
 
+		APlayerController* PC;
+
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* BoxComponent;
 

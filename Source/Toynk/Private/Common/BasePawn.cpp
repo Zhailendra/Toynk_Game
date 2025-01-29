@@ -17,14 +17,19 @@ ABasePawn::ABasePawn()
 void ABasePawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	PC = Cast<APlayerController>(GetController());
+
+	PC->bShowMouseCursor = true;
+	PC->bEnableClickEvents = true;
+	PC->bEnableMouseOverEvents = true;
 }
 
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (const APlayerController* PC = Cast<APlayerController>(GetController()))
+	if (PC)
 	{
 		FHitResult HitResult;
 		PC->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
@@ -36,13 +41,12 @@ void ABasePawn::Tick(float DeltaTime)
 void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 {
 	FVector ToTarget = LookAtTarget - TurretMeshComponent->GetComponentLocation();
-	FRotator LookAtRotation = FRotator(0.f, ToTarget.Rotation().Yaw, 0.f);
+	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw, 0.0f);
 	
 	TurretMeshComponent->SetWorldRotation(
 		FMath::RInterpTo(TurretMeshComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed),
