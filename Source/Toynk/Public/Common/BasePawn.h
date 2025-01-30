@@ -22,6 +22,9 @@ class TOYNK_API ABasePawn : public APawn
 		virtual void BeginPlay() override;
 		void RotateTurret(const FVector& LookAtTarget) const;
 
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* ProjectileSpawnPoint;
+
 		UPROPERTY(EditAnywhere, Category = "Turret Properties")
 		float InterpSpeed = 5.0f;
 		
@@ -36,9 +39,8 @@ class TOYNK_API ABasePawn : public APawn
 		UStaticMeshComponent* BaseMeshComponent;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* TurretMeshComponent;
+		USceneComponent* SceneComponent;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		USceneComponent* ProjectileSpawnPoint;
-
+		UStaticMeshComponent* TurretMeshComponent;
 };

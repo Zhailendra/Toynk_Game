@@ -6,6 +6,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Bullet/Bullet.h"
 
 ATankBody::ATankBody()
 {
@@ -44,6 +45,10 @@ void ATankBody::SetupPlayerInputComponent(class UInputComponent* PlayerInputComp
 		{
 			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATankBody::Move);
 		}
+		if (FireAction)
+		{
+			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ATankBody::Fire);
+		}
 	}
 }
 
@@ -60,5 +65,16 @@ void ATankBody::Move(const FInputActionValue& Value)
 		FRotator DeltaRotation = FRotator::ZeroRotator;
 		DeltaRotation.Yaw = MoveDirection.X * RotateSpeed * UGameplayStatics::GetWorldDeltaSeconds(this);
 		AddActorLocalRotation(DeltaRotation, true);
+	}
+}
+
+void ATankBody::Fire(const FInputActionValue& Value)
+{
+	if (Controller)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+
+		GetWorld()->SpawnActor<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), SpawnParams);
 	}
 }

@@ -5,6 +5,7 @@
 #include "InputActionValue.h"
 #include "TankBody.generated.h"
 
+class ABullet;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -13,6 +14,7 @@ class UInputAction;
 /**
  * 
  */
+
 UCLASS()
 class TOYNK_API ATankBody : public ABasePawn
 {
@@ -28,6 +30,9 @@ class TOYNK_API ATankBody : public ABasePawn
 	protected:
 		virtual void BeginPlay() override;
 
+		UPROPERTY(EditAnywhere, Category = "Bullet")
+		TSubclassOf<ABullet> BulletClass;
+
 		UPROPERTY(EditAnywhere, Category = "Tank Input")
 		UInputMappingContext* PlayerContext;
 
@@ -41,6 +46,7 @@ class TOYNK_API ATankBody : public ABasePawn
 		UInputAction* FireAction;
 
 		void Move(const FInputActionValue &Value);
+		void Fire(const FInputActionValue &Value);
 		
 	private:
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))

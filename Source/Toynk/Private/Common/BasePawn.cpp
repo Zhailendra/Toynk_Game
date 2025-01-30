@@ -4,12 +4,19 @@
 ABasePawn::ABasePawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	RootComponent = BoxComponent;
+
 	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMeshComponent"));
 	BaseMeshComponent->SetupAttachment(BoxComponent);
+
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	SceneComponent->SetupAttachment(BaseMeshComponent);
+
 	TurretMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretMeshComponent"));
-	TurretMeshComponent->SetupAttachment(BaseMeshComponent);
+	TurretMeshComponent->SetupAttachment(SceneComponent);
+
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMeshComponent);
 }
@@ -46,7 +53,7 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 {
 	FVector ToTarget = LookAtTarget - TurretMeshComponent->GetComponentLocation();
-	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw, 0.0f);
+	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw + 90, 0.0f);
 	
 	TurretMeshComponent->SetWorldRotation(
 		FMath::RInterpTo(TurretMeshComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed),
