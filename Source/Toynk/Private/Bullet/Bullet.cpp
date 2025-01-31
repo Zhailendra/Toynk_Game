@@ -3,24 +3,24 @@
 
 #include "Bullet/Bullet.h"
 #include "Components/BoxComponent.h"
+#include "Components/HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABullet::ABullet()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-	RootComponent = BoxComponent;
-
 	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMeshComponent"));
-	BaseMeshComponent->SetupAttachment(BoxComponent);
+
+	RootComponent = BaseMeshComponent;
 }
 
 void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector Start = BoxComponent->GetComponentLocation();
-	FVector End = Start + (GetActorForwardVector() * Step);
+	FVector Start = BaseMeshComponent->GetComponentLocation();
+	FVector End = Start + (GetActorForwardVector() * BulletSpeed * DeltaTime);
 
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
@@ -32,7 +32,9 @@ void ABullet::Tick(float DeltaTime)
 
 	if (bHit)
 	{
-		if (Bounce < MaxBounce) {
+		AActor* OtherActor = HitResult.GetActor();
+
+		if (Bounce < MaxBounce && (OtherActor == nullptr || OtherActor->GetOwner() == nullptr || Cast<UHealthComponent>(OtherActor->GetOwner()->FindComponentByClass(UHealthComponent::StaticClass())))) {
 			Bounce++;
 
 			FVector ImpactNormal = HitResult.Normal;
@@ -42,7 +44,13 @@ void ABullet::Tick(float DeltaTime)
 			SetActorRotation(NewDirection.Rotation());
 		}
 		else {
-			UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *HitResult.GetActor()->GetName());
+			if (OtherActor && OtherActor != GetOwner()) {
+				auto DamageTypeClass = UDamageType::StaticClass();
+				auto MyOwnerInstigator = GetOwner()->GetInstigatorController();
+				UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, DamageTypeClass);
+			}
+
+			Destroy();
 		}
 	}
 	else {

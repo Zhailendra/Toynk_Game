@@ -10,6 +10,7 @@
  */
 
 class UBoxComponent;
+class UHealthComponent;
 
 UCLASS()
 class TOYNK_API ABullet : public AActor
@@ -23,21 +24,17 @@ class TOYNK_API ABullet : public AActor
 
 	protected:
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		float BulletSpeed = 400.0f;
+		float BulletSpeed = 2000.0f;
 
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		float Step = 20.0f;
+		float Damage = 50.f;
 
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		int MaxBounce = 1;
 
-		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		int Bounce = 0;
 
 	private:
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UBoxComponent* BoxComponent;
-
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMeshComponent;
 };

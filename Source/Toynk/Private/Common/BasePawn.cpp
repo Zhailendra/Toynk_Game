@@ -1,5 +1,6 @@
 #include "Common/BasePawn.h"
 #include "Components/BoxComponent.h"
+#include "Bullet/Bullet.h"
 
 ABasePawn::ABasePawn()
 {
@@ -26,10 +27,6 @@ void ABasePawn::BeginPlay()
 	Super::BeginPlay();
 
 	PC = Cast<APlayerController>(GetController());
-
-	PC->bShowMouseCursor = true;
-	PC->bEnableClickEvents = true;
-	PC->bEnableMouseOverEvents = true;
 }
 
 void ABasePawn::Tick(float DeltaTime)
@@ -59,4 +56,17 @@ void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 		FMath::RInterpTo(TurretMeshComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed),
 		true
 	);
+}
+
+void ABasePawn::Fire()
+{
+	if (Controller)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("FIRING!"));
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+
+		GetWorld()->SpawnActor<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), SpawnParams);
+	}
 }
