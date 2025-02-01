@@ -1,6 +1,8 @@
 #include "Common/BasePawn.h"
-#include "Components/BoxComponent.h"
+
 #include "Bullet/Bullet.h"
+#include "Components/BoxComponent.h"
+#include "ObjectPoolIng/PoolSubsystem.h"
 
 ABasePawn::ABasePawn()
 {
@@ -27,6 +29,7 @@ void ABasePawn::BeginPlay()
 	Super::BeginPlay();
 
 	PC = Cast<APlayerController>(GetController());
+	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
 }
 
 void ABasePawn::Tick(float DeltaTime)
@@ -62,11 +65,6 @@ void ABasePawn::Fire()
 {
 	if (Controller)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("FIRING!"));
-
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-
-		GetWorld()->SpawnActor<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), SpawnParams);
+		PoolSubsystem->SpawnFromPool<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), this)->InitBullet(this);
 	}
 }

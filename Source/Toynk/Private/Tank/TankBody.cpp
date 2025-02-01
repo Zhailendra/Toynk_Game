@@ -15,9 +15,7 @@ ATankBody::ATankBody()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
-	//PC->bShowMouseCursor = true;
-	//PC->bEnableClickEvents = true;
-	//PC->bEnableMouseOverEvents = true;
+	Tags.Add(FName("controllableActor"));
 }
 
 void ATankBody::BeginPlay()
@@ -30,6 +28,14 @@ void ATankBody::BeginPlay()
 		{
 			Subsystem->AddMappingContext(PlayerContext, 0);
 		}
+	}
+
+	if (PC)
+	{
+		PC->bShowMouseCursor = true;
+		PC->bEnableClickEvents = true;
+		PC->bEnableMouseOverEvents = true;
+		PC->CurrentMouseCursor = EMouseCursor::Crosshairs;
 	}
 }
 

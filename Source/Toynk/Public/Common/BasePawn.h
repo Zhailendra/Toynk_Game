@@ -4,8 +4,8 @@
 #include "GameFramework/Pawn.h"
 #include "BasePawn.generated.h"
 
-
 class ABullet;
+class UPoolSubsystem;
 class UBoxComponent;
 
 UCLASS()
@@ -33,6 +33,9 @@ class TOYNK_API ABasePawn : public APawn
 		void Fire();
 		
 		APlayerController* PC;
+	
+		UPROPERTY()
+		UPoolSubsystem* PoolSubsystem;
 
 	private:
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -49,4 +52,5 @@ class TOYNK_API ABasePawn : public APawn
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* ProjectileSpawnPoint;
+
 };
