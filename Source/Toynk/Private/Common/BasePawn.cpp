@@ -1,15 +1,25 @@
 #include "Common/BasePawn.h"
+
+#include "Bullet/Bullet.h"
 #include "Components/BoxComponent.h"
+#include "ObjectPoolIng/PoolSubsystem.h"
 
 ABasePawn::ABasePawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	RootComponent = BoxComponent;
+
 	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMeshComponent"));
 	BaseMeshComponent->SetupAttachment(BoxComponent);
+
+	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
+	SceneComponent->SetupAttachment(BaseMeshComponent);
+
 	TurretMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TurretMeshComponent"));
-	TurretMeshComponent->SetupAttachment(BaseMeshComponent);
+	TurretMeshComponent->SetupAttachment(SceneComponent);
+
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMeshComponent);
 }
@@ -19,10 +29,7 @@ void ABasePawn::BeginPlay()
 	Super::BeginPlay();
 
 	PC = Cast<APlayerController>(GetController());
-
-	PC->bShowMouseCursor = true;
-	PC->bEnableClickEvents = true;
-	PC->bEnableMouseOverEvents = true;
+	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
 }
 
 void ABasePawn::Tick(float DeltaTime)
@@ -46,10 +53,18 @@ void ABasePawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 {
 	FVector ToTarget = LookAtTarget - TurretMeshComponent->GetComponentLocation();
-	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw, 0.0f);
+	FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw + 90, 0.0f);
 	
 	TurretMeshComponent->SetWorldRotation(
 		FMath::RInterpTo(TurretMeshComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed),
 		true
 	);
+}
+
+void ABasePawn::Fire()
+{
+	if (Controller)
+	{
+		PoolSubsystem->SpawnFromPool<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), this)->InitBullet(this);
+	}
 }

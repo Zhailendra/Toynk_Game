@@ -4,6 +4,8 @@
 #include "GameFramework/Pawn.h"
 #include "BasePawn.generated.h"
 
+class ABullet;
+class UPoolSubsystem;
 class UBoxComponent;
 
 UCLASS()
@@ -22,18 +24,28 @@ class TOYNK_API ABasePawn : public APawn
 		virtual void BeginPlay() override;
 		void RotateTurret(const FVector& LookAtTarget) const;
 
+		UPROPERTY(EditAnywhere, Category = "Bullet")
+		TSubclassOf<ABullet> BulletClass;
+
 		UPROPERTY(EditAnywhere, Category = "Turret Properties")
 		float InterpSpeed = 5.0f;
+
+		void Fire();
 		
-	private:
-
 		APlayerController* PC;
+	
+		UPROPERTY()
+		UPoolSubsystem* PoolSubsystem;
 
+	private:
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* BoxComponent;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMeshComponent;
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		USceneComponent* SceneComponent;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* TurretMeshComponent;
