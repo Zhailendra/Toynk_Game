@@ -74,3 +74,5 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+Content/Levels/Level_Blueprints/Base_Level_Foliage.uasset

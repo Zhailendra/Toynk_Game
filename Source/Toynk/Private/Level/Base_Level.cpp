@@ -1,27 +1,27 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Level/Base_Level.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
-// Sets default values
 ABase_Level::ABase_Level()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMeshComponent"));
+
+	BaseFoliageComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseFoliageComponent"));
+	BaseFoliageComponent->SetupAttachment(BaseMeshComponent);
+
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
+	SpringArmComponent->SetupAttachment(BaseMeshComponent);
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
+	CameraComponent->SetupAttachment(SpringArmComponent);
 }
 
-// Called when the game starts or when spawned
 void ABase_Level::BeginPlay()
 {
 	Super::BeginPlay();
 	
-}
-
-// Called every frame
-void ABase_Level::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }
 

@@ -5,8 +5,6 @@
 #include "InputActionValue.h"
 #include "TankBody.generated.h"
 
-class USpringArmComponent;
-class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 
@@ -44,11 +42,6 @@ class TOYNK_API ATankBody : public ABasePawn
 		void Move(const FInputActionValue &Value);
 		
 	private:
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		USpringArmComponent* SpringArmComponent;
-
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UCameraComponent* CameraComponent;
 
 		UPROPERTY(EditAnywhere, Category = "Tank Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float MoveSpeed = 400.0f;
