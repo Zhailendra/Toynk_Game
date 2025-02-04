@@ -30,16 +30,26 @@ void ABasePawn::BeginPlay()
 
 	PC = Cast<APlayerController>(GetController());
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
+
+	if (PC)
+	{
+		PC->bShowMouseCursor = true;
+		PC->bEnableClickEvents = true;
+		PC->bEnableMouseOverEvents = true;
+		PC->CurrentMouseCursor = EMouseCursor::Crosshairs;
+	}
 }
 
 void ABasePawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (PC)
 	{
 		FHitResult HitResult;
 		PC->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+
+		//DrawDebugLine(GetWorld(), TurretMeshComponent->GetComponentLocation(), HitResult.ImpactPoint, FColor::Red, false, 0.1f, 0, 1.0f);
 
 		RotateTurret(HitResult.ImpactPoint);
 	}

@@ -1,20 +1,14 @@
 #include "Tank/TankBody.h"
 
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Level/Base_Level.h"
 
 ATankBody::ATankBody()
 {
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
-	SpringArmComponent->SetupAttachment(RootComponent);
-
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComponent->SetupAttachment(SpringArmComponent);
-
 	Tags.Add(FName("controllableActor"));
 }
 
@@ -22,20 +16,26 @@ void ATankBody::BeginPlay()
 {
 	Super::BeginPlay();
 
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
+	{
+		for (TActorIterator<ABase_Level> It(GetWorld()); It; ++It)
+		{
+			ABase_Level* LevelActor = *It;
+			if (LevelActor)
+			{
+				PlayerController->SetViewTargetWithBlend(LevelActor, 1.3f);
+				break;
+			}
+		}
+	}
+
 	if (const auto TankPlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(TankPlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(PlayerContext, 0);
 		}
-	}
-
-	if (PC)
-	{
-		PC->bShowMouseCursor = true;
-		PC->bEnableClickEvents = true;
-		PC->bEnableMouseOverEvents = true;
-		PC->CurrentMouseCursor = EMouseCursor::Crosshairs;
 	}
 }
 

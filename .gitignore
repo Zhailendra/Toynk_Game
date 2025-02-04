@@ -75,5 +75,4 @@ Plugins/**/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-# Assets
-Content/Realistic_Starter_VFX_Pack_Vol2
+Content/Levels/Level_Blueprints/Base_Level_Foliage.uasset
