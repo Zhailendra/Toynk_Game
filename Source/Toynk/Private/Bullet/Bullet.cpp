@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Bullet/Bullet.h"
 #include "Components/BoxComponent.h"
 #include "Components/HealthComponent.h"
@@ -16,6 +13,7 @@ ABullet::ABullet()
 	
 	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMeshComponent"));
 	BaseMeshComponent->SetupAttachment(BoxComponent);
+	BaseMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InitialPosition = GetActorLocation();
 }
@@ -23,6 +21,7 @@ ABullet::ABullet()
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
+
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
 }
 
@@ -59,12 +58,11 @@ void ABullet::Tick(float DeltaTime)
 		}
 		else 
 		{
-			if (OtherActor && OtherActor != GetOwner() && HealthComp)
+			if (OtherActor /*&& OtherActor != GetOwner()*/ && HealthComp)
 			{
 				AController* MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
 				if (MyOwnerInstigator)
 				{
-					GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("DAMAGE!"));
 					UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, UDamageType::StaticClass());
 				}
 			}
@@ -80,7 +78,7 @@ void ABullet::Tick(float DeltaTime)
 		SetActorLocation(End);
 	}
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
 }
 
 void ABullet::InitBullet(APawn* Pawn)

@@ -2,23 +2,27 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "ObjectPoolIng/Poolable.h"
 #include "LandMine.generated.h"
 
-class UBoxComponent;
+class UPoolSubsystem;
 class UNiagaraSystem;
+
+class UBoxComponent;
 class USoundCue;
 
 UCLASS()
-class TOYNK_API ALandMine : public APawn
+class TOYNK_API ALandMine : public AActor, public IPoolable
 {
 	GENERATED_BODY()
 
 	public:
 		ALandMine();
 
-		virtual void Tick(float DeltaTime) override;
+		void InitLandMine(APawn* Pawn);
 
-		virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+		virtual void OnSpawnFromPool_Implementation() override;
+		virtual void OnReturnToPool_Implementation() override;
 
 	protected:
 		virtual void BeginPlay() override;
@@ -26,12 +30,18 @@ class TOYNK_API ALandMine : public APawn
 		UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+		UFUNCTION()
+		void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+		UPROPERTY()
+		UPoolSubsystem* PoolSubsystem;
+
 	private:
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* MeshComponent;
-
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* BoxComponent;
+	
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		UStaticMeshComponent* MeshComponent;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* SceneComponent;
@@ -39,13 +49,16 @@ class TOYNK_API ALandMine : public APawn
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* ExplosionSpawnPoint;
 
-		UPROPERTY(EditAnywhere, Category = "Explosion")
+		/*UPROPERTY(EditAnywhere, Category = "Properties")
 		UNiagaraSystem* ExplosionEffect;
 
-		UPROPERTY(EditAnywhere, Category = "Explosion")
-		USoundCue* ExplosionSound;
+		UPROPERTY(EditAnywhere, Category = "Properties")
+		USoundCue* ExplosionSound;*/
 
-		UPROPERTY(EditAnywhere, Category = "Explosion")
+		UPROPERTY(EditAnywhere, Category = "Properties")
 		float ExplosionDamage = 100.0f;
+
+		UPROPERTY(EditAnywhere, Category = "Properties")
+		bool bIsArmed;
 
 };
