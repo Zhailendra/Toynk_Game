@@ -1,8 +1,9 @@
 #include "Common/BasePawn.h"
 
-#include "Bullet/Bullet.h"
-#include "Components/BoxComponent.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
+#include "Bullet/Bullet.h"
+#include "LandMine/LandMine.h"
+#include "Components/BoxComponent.h"
 
 ABasePawn::ABasePawn()
 {
@@ -22,6 +23,9 @@ ABasePawn::ABasePawn()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(TurretMeshComponent);
+
+	LandMineSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("LandMineSpawnPoint"));
+	LandMineSpawnPoint->SetupAttachment(SceneComponent);
 }
 
 void ABasePawn::BeginPlay()
@@ -30,6 +34,7 @@ void ABasePawn::BeginPlay()
 
 	PC = Cast<APlayerController>(GetController());
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
+	CurrentLandMines = 0;
 
 	if (PC)
 	{
@@ -73,8 +78,49 @@ void ABasePawn::RotateTurret(const FVector& LookAtTarget) const
 
 void ABasePawn::Fire()
 {
-	if (Controller)
+	if (!bCanFire) return;
+
+	bCanFire = false;
+
+	if (Controller && PoolSubsystem)
 	{
-		PoolSubsystem->SpawnFromPool<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), this)->InitBullet(this);
+		PoolSubsystem->SpawnFromPool<ABullet>(
+			BulletClass,
+			ProjectileSpawnPoint->GetComponentLocation(),
+			ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0),
+			this
+		)->InitBullet(this);
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_FireCooldown, this, &ABasePawn::ResetFire, FireCooldown, false);
+}
+
+void ABasePawn::ResetFire()
+{
+	bCanFire = true;
+}
+
+void ABasePawn::DropLandMine()
+{
+	if (!bCanDropMine) return;
+
+	bCanDropMine = false;
+
+	if (Controller && PoolSubsystem && CurrentLandMines < MaxLandMines)
+	{
+		CurrentLandMines++;
+		PoolSubsystem->SpawnFromPool<ALandMine>(
+			LandMineClass,
+			LandMineSpawnPoint->GetComponentLocation(),
+			LandMineSpawnPoint->GetComponentRotation(),
+			this
+		)->InitLandMine(this);
+	}
+	
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_DropMineCooldown, this, &ABasePawn::ResetDropMine, DropMineCooldown, false);
+}
+
+void ABasePawn::ResetDropMine()
+{
+	bCanDropMine = true;
 }

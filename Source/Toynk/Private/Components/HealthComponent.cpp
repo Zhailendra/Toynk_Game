@@ -1,9 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Components/HealthComponent.h"
 
-// Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -11,7 +7,6 @@ UHealthComponent::UHealthComponent()
 }
 
 
-// Called when the game starts
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,12 +14,9 @@ void UHealthComponent::BeginPlay()
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
 
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Begin health"));
-	
 }
 
 
-// Called every frame
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

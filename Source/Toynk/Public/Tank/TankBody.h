@@ -34,7 +34,7 @@ class TOYNK_API ATankBody : public ABasePawn
 		UInputAction* MoveAction;
 
 		UPROPERTY(EditAnywhere, Category = "Tank Input")
-		UInputAction* RotateAction;
+		UInputAction* DropLandMineAction;
 
 		UPROPERTY(EditAnywhere, Category = "Tank Input")
 		UInputAction* FireAction;
@@ -48,5 +48,5 @@ class TOYNK_API ATankBody : public ABasePawn
 			
 		UPROPERTY(EditAnywhere, Category = "Tank Movement", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float RotateSpeed = 45.0f;
-	
+
 };

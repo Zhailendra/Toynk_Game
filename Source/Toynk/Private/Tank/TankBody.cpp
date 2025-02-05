@@ -58,6 +58,10 @@ void ATankBody::SetupPlayerInputComponent(class UInputComponent* PlayerInputComp
 		{
 			EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ATankBody::Fire);
 		}
+		if (DropLandMineAction)
+		{
+			EnhancedInputComponent->BindAction(DropLandMineAction, ETriggerEvent::Started, this, &ATankBody::DropLandMine);
+		}
 	}
 }
 
