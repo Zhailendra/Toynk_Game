@@ -13,7 +13,7 @@ ATankBody::ATankBody()
 	SpringArmComponent->SetupAttachment(RootComponent);
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
-	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->SetupAttachment(RootComponent);
 
 	//PC->bShowMouseCursor = true;
 	//PC->bEnableClickEvents = true;

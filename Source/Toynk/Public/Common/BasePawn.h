@@ -7,6 +7,8 @@
 
 class ABullet;
 class UBoxComponent;
+class USoundCue;
+class UNiagaraSystem;
 
 UCLASS()
 class TOYNK_API ABasePawn : public APawn
@@ -49,4 +51,10 @@ class TOYNK_API ABasePawn : public APawn
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* ProjectileSpawnPoint;
+
+		UPROPERTY(EditAnywhere, Category = "Effects")
+		USoundCue* FireSFX;
+
+		UPROPERTY(EditAnywhere, Category = "Effects")
+		UNiagaraSystem* FireVFX;
 };

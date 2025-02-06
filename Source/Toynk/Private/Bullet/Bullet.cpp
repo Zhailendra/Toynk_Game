@@ -34,7 +34,7 @@ void ABullet::Tick(float DeltaTime)
 	{
 		AActor* OtherActor = HitResult.GetActor();
 
-		if (Bounce < MaxBounce && (OtherActor == nullptr || OtherActor->GetOwner() == nullptr || Cast<UHealthComponent>(OtherActor->GetOwner()->FindComponentByClass(UHealthComponent::StaticClass())))) {
+		if (Bounce < MaxBounce && (OtherActor == nullptr || OtherActor->GetOwner() == nullptr)) {
 			Bounce++;
 
 			FVector ImpactNormal = HitResult.Normal;
@@ -42,20 +42,36 @@ void ABullet::Tick(float DeltaTime)
 
 			NewDirection.Normalize();
 			SetActorRotation(NewDirection.Rotation());
+
+			GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Bounce"));
 		}
 		else {
-			if (OtherActor && OtherActor != GetOwner()) {
-				auto DamageTypeClass = UDamageType::StaticClass();
-				auto MyOwnerInstigator = GetOwner()->GetInstigatorController();
-				UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, DamageTypeClass);
-			}
 
-			Destroy();
+			if (OtherActor && OtherActor->FindComponentByClass<UHealthComponent>()) {
+				if (OtherActor != GetOwner()) {
+					auto DamageTypeClass = UDamageType::StaticClass();
+					auto MyOwnerInstigator = GetOwner()->GetInstigatorController();
+					UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, DamageTypeClass);
+				}
+
+				Destroy();
+			}
+			else {
+				BaseMeshComponent->SetVisibility(false);
+				//GetWorldTimerManager().SetTimer(DelayBeforeDestroy, this, &ABullet::DestroyProjectile, DelayDestroy, false);
+				Destroy();
+			}
 		}
 	}
 	else {
 		SetActorLocation(End);
 	}
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
+}
+
+void ABullet::DestroyProjectile()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("DestroyProjectile called!"));
+	Destroy();
 }

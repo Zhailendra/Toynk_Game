@@ -1,6 +1,9 @@
 #include "Common/BasePawn.h"
-#include "Components/BoxComponent.h"
 #include "Bullet/Bullet.h"
+#include "Components/BoxComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
 
 ABasePawn::ABasePawn()
 {
@@ -68,5 +71,22 @@ void ABasePawn::Fire()
 		SpawnParams.Owner = this;
 
 		GetWorld()->SpawnActor<ABullet>(BulletClass, ProjectileSpawnPoint->GetComponentLocation(), ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0), SpawnParams);
+
+		if (FireSFX)
+		{
+			UGameplayStatics::PlaySoundAtLocation(
+				this,
+				FireSFX,
+				ProjectileSpawnPoint->GetComponentLocation());
+		}
+
+		if (FireVFX)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				this,
+				FireVFX,
+				ProjectileSpawnPoint->GetComponentLocation(),
+				ProjectileSpawnPoint->GetComponentRotation());
+		}
 	}
 }

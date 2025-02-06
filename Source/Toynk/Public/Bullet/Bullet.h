@@ -23,6 +23,12 @@ class TOYNK_API ABullet : public AActor
 		virtual void Tick(float DeltaTime) override;
 
 	protected:
+		void DestroyProjectile();
+
+	private:
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		UStaticMeshComponent* BaseMeshComponent;
+
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float BulletSpeed = 2000.0f;
 
@@ -34,7 +40,8 @@ class TOYNK_API ABullet : public AActor
 
 		int Bounce = 0;
 
-	private:
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		UStaticMeshComponent* BaseMeshComponent;
+		FTimerHandle DelayBeforeDestroy;
+
+		UPROPERTY(EditAnywhere, Category = "Bullet Properties")
+		float DelayDestroy = 2.f;
 };
