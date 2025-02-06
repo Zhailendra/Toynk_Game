@@ -24,8 +24,12 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		virtual void OnSpawnFromPool_Implementation() override;
 		virtual void OnReturnToPool_Implementation() override;
 
+		void Explode();
+
 	protected:
 		virtual void BeginPlay() override;
+
+		void ReturnToPool();
 
 		UFUNCTION()
 		void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -54,6 +58,11 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 
 		UPROPERTY(EditAnywhere, Category = "Properties")
 		USoundCue* ExplosionSound;*/
+
+		FTimerHandle TimerHandle_LifeTime;
+
+		UPROPERTY(EditAnywhere, Category = "Timers")
+		float LifeTime = 10.0f;
 
 		UPROPERTY(EditAnywhere, Category = "Properties")
 		float ExplosionDamage = 100.0f;

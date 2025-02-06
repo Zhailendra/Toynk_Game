@@ -25,7 +25,7 @@ private:
 	ATankBody* PlayerTank;
 
 	UPROPERTY(EditAnywhere, Category = "Canon Properties")
-	float FireRange = 1000.f;
+	float FireRange = 5000.f;
 
 	UPROPERTY(EditAnywhere, Category = "Canon Properties")
 	float FireRate = 2.f;

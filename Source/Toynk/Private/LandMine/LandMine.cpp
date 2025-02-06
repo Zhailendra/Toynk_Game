@@ -38,10 +38,11 @@ void ALandMine::BeginPlay()
 	Super::BeginPlay();
 
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
+	LifeTime = 10.0f;
 }
 
 void ALandMine::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
 	if (OtherActor && OtherActor->ActorHasTag("controllableActor"))
@@ -52,10 +53,7 @@ void ALandMine::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 			auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
 			UGameplayStatics::ApplyDamage(OtherActor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
 			
-			if (PoolSubsystem)
-			{
-				PoolSubsystem->ReturnToPool(this);
-			}
+			ReturnToPool();
 		}
 	}
 }
@@ -79,11 +77,20 @@ void ALandMine::InitLandMine(APawn* Pawn)
 	bIsArmed = false;
 }
 
+void ALandMine::ReturnToPool()
+{
+	if (PoolSubsystem)
+	{
+		PoolSubsystem->ReturnToPool(this);
+	}
+}
+
 void ALandMine::OnSpawnFromPool_Implementation()
 {
 	SetActorHiddenInGame(true);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	bIsArmed = false;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_LifeTime, this, &ALandMine::Explode, LifeTime, false);
 }
 
 void ALandMine::OnReturnToPool_Implementation()
@@ -92,5 +99,10 @@ void ALandMine::OnReturnToPool_Implementation()
 	SetActorHiddenInGame(true);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	bIsArmed = false;
+}
+
+void ALandMine::Explode()
+{
+	ReturnToPool();
 }
 

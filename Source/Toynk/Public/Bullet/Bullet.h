@@ -32,7 +32,7 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 
 	protected:
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		float BulletSpeed = 2000.0f;
+		float BulletSpeed = 1500.0f;
 
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float Damage = 50.f;
