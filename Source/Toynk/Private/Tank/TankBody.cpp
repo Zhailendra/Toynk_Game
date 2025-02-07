@@ -9,7 +9,6 @@
 
 ATankBody::ATankBody()
 {
-	Tags.Add(FName("controllableActor"));
 }
 
 void ATankBody::BeginPlay()

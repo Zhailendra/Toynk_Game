@@ -1,18 +1,18 @@
-#include "Tower/Tower.h"
+#include "Enemy/BaseEnemy.h"
 #include "Tank/TankBody.h"
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
-void ATower::BeginPlay()
+void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
 	PlayerTank = Cast<ATankBody>(UGameplayStatics::GetPlayerPawn(this, 0));
 
-	GetWorldTimerManager().SetTimer(FireRateTimerHandle, this, &ATower::CheckFireCondition, FireRate, true);
+	GetWorldTimerManager().SetTimer(FireRateTimerHandle, this, &ABaseEnemy::CheckFireCondition, FireRate, true);
 }
 
-void ATower::Tick(float DeltaSeconds)
+void ABaseEnemy::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
@@ -22,7 +22,7 @@ void ATower::Tick(float DeltaSeconds)
 	}
 }
 
-void ATower::CheckFireCondition()
+void ABaseEnemy::CheckFireCondition()
 {
 	if (InFireRange())
 	{
@@ -31,9 +31,7 @@ void ATower::CheckFireCondition()
 
 }
 
-#include "DrawDebugHelpers.h"
-
-bool ATower::InFireRange()
+bool ABaseEnemy::InFireRange()
 {
 	if (!PlayerTank)
 	{
