@@ -26,6 +26,8 @@ ABasePawn::ABasePawn()
 
 	LandMineSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("LandMineSpawnPoint"));
 	LandMineSpawnPoint->SetupAttachment(SceneComponent);
+
+	Tags.Add(FName("controllableActor"));
 }
 
 void ABasePawn::BeginPlay()

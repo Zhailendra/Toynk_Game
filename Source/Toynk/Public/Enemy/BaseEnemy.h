@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Common/BasePawn.h"
-#include "Tower.generated.h"
+#include "BaseEnemy.generated.h"
 
 class ATankBody;
 
@@ -11,7 +11,7 @@ class ATankBody;
  */
 
 UCLASS()
-class TOYNK_API ATower : public ABasePawn
+class TOYNK_API ABaseEnemy : public ABasePawn
 {
 	GENERATED_BODY()
 
@@ -21,7 +21,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
 	ATankBody* PlayerTank;
 
 	UPROPERTY(EditAnywhere, Category = "Canon Properties")
