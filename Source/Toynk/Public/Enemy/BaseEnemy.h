@@ -1,17 +1,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Common/BasePawn.h"
+#include "Tank/BaseTank.h"
 #include "BaseEnemy.generated.h"
 
-class ATankBody;
+class APlayerTank;
 
 /**
  *
  */
 
 UCLASS()
-class TOYNK_API ABaseEnemy : public ABasePawn
+class TOYNK_API ABaseEnemy : public ABaseTank
 {
 	GENERATED_BODY()
 
@@ -21,7 +21,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	ATankBody* PlayerTank;
+	UPROPERTY()
+	APlayerTank* PlayerTank;
 
 	UPROPERTY(EditAnywhere, Category = "Canon Properties")
 	float FireRange = 5000.f;

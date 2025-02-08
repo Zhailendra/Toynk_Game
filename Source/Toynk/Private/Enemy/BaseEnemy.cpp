@@ -1,5 +1,7 @@
 #include "Enemy/BaseEnemy.h"
-#include "Tank/TankBody.h"
+
+#include "Tank/PlayerTank.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 
@@ -7,7 +9,7 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PlayerTank = Cast<ATankBody>(UGameplayStatics::GetPlayerPawn(this, 0));
+	PlayerTank = Cast<APlayerTank>(UGameplayStatics::GetPlayerPawn(this, 0));
 
 	GetWorldTimerManager().SetTimer(FireRateTimerHandle, this, &ABaseEnemy::CheckFireCondition, FireRate, true);
 }
@@ -18,7 +20,7 @@ void ABaseEnemy::Tick(float DeltaSeconds)
 
 	if (InFireRange())
 	{
-		RotateTurret(PlayerTank->GetActorLocation());
+		RotateToCursor(PlayerTank->GetActorLocation());
 	}
 }
 

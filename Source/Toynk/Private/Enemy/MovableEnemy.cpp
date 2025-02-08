@@ -1,9 +1,9 @@
 #include "Enemy/MovableEnemy.h"
+
+#include "Tank/PlayerTank.h"
+
 #include "AIController.h"
 #include "GameFramework/Controller.h"
-#include "Tank/TankBody.h"
-#include "Components/SphereComponent.h"
-#include "NavigationSystem.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Perception/PawnSensingComponent.h"
 
@@ -40,5 +40,3 @@ void AMovableEnemy::OnPlayerSeen(APawn* SeenPawn)
 		EnemyAIController->MoveToActor(PlayerTank, DistanceFromPlayer);
 	}
 }
-
-
