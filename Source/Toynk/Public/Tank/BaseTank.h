@@ -9,6 +9,7 @@ class UPoolSubsystem;
 class UCapsuleComponent;
 class UBoxComponent;
 class UArrowComponent;
+class USoundCue;
 
 class ABullet;
 class ALandMine;
@@ -84,6 +85,13 @@ private:
 
 	FTimerHandle TimerHandle_FireCooldown;
 	FTimerHandle TimerHandle_DropMineCooldown;
+	float OldTick;
+
+	UPROPERTY(EditAnywhere, Category = "Sound Properties")
+	USoundCue* ChainSound;
+
+	UPROPERTY(EditAnywhere, Category = "Sound Properties")
+	USoundCue* FireSound;
 
 	UPROPERTY(EditAnywhere, Category = "Cooldowns")
 	float FireCooldown = 1.0f;

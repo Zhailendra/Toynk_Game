@@ -4,6 +4,7 @@
 #include "Components/HealthComponent.h"
 
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
 
 ABullet::ABullet()
@@ -52,6 +53,10 @@ void ABullet::Tick(float DeltaTime)
 		{
 			Bounce++;
 
+			if (RicochetSound != nullptr) {
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), RicochetSound, GetActorLocation());
+			}
+
 			FVector ImpactNormal = HitResult.Normal;
 			FVector NewDirection = GetActorForwardVector() - 2 * FVector::DotProduct(GetActorForwardVector(), ImpactNormal) * ImpactNormal;
 			NewDirection.Normalize();
@@ -66,6 +71,15 @@ void ABullet::Tick(float DeltaTime)
 				if (MyOwnerInstigator)
 				{
 					UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, UDamageType::StaticClass());
+
+					if (EnemyHitSound != nullptr) {
+						UGameplayStatics::PlaySoundAtLocation(GetWorld(), EnemyHitSound, GetActorLocation());
+					}
+				}
+			}
+			else {
+				if (WallHitSound != nullptr) {
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), WallHitSound, GetActorLocation());
 				}
 			}
 			if (PoolSubsystem)
@@ -80,7 +94,7 @@ void ABullet::Tick(float DeltaTime)
 		SetActorLocation(End);
 	}
 
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
 }
 
 void ABullet::InitBullet(APawn* Pawn)

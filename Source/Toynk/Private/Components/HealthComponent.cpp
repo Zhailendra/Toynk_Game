@@ -1,5 +1,8 @@
 #include "Components/HealthComponent.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -24,13 +27,18 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* Instigator, AActor* DamageCauser)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, ("Damage taken"));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, ("Damage taken"));
 
 	if (Damage <= 0.f) return;
 
 	CurrentHealth -= Damage;
 	if (CurrentHealth <= 0) {
 		CurrentHealth = 0;
+
+		if (ExplosionSound != nullptr) {
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, DamagedActor->GetActorLocation());
+		}
+
 		GetOwner()->Destroy();
 	}
 }

@@ -54,10 +54,13 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		USceneComponent* ExplosionSpawnPoint;
 
 		/*UPROPERTY(EditAnywhere, Category = "Properties")
-		UNiagaraSystem* ExplosionEffect;
+		UNiagaraSystem* ExplosionEffect;*/
 
-		UPROPERTY(EditAnywhere, Category = "Properties")
-		USoundCue* ExplosionSound;*/
+		UPROPERTY(EditAnywhere, Category = "Sound Properties")
+		USoundCue* DeploySound;
+
+		UPROPERTY(EditAnywhere, Category = "Sound Properties")
+		USoundCue* ExplosionSound;
 
 		FTimerHandle TimerHandle_LifeTime;
 

@@ -8,14 +8,15 @@
 #include "Components/HealthComponent.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
+#include "Sound/SoundCue.h"
 
 ABaseTank::ABaseTank()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	Tags.Add(FName("DestroyableActor"));
-
 
 	BaseMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BaseMeshComponent"));
 	BaseMeshComponent->SetupAttachment(RootComponent);
@@ -70,8 +71,26 @@ void ABaseTank::Tick(float DeltaTime)
 
 		if (bHit)
 		{
-			DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
+			//DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
 			RotateToCursor(HitResult.Location);
+		}
+
+		if (GetVelocity().Size() > 0)
+		{
+			OldTick += DeltaTime;
+
+			if (OldTick > 0.1f)
+			{
+				if (ChainSound != nullptr)
+				{
+					UGameplayStatics::PlaySoundAtLocation(GetWorld(), ChainSound, GetMesh()->GetComponentLocation());
+				}
+				OldTick = 0;
+			}
+		}
+		else
+		{
+			OldTick = 0;
 		}
 	}
 
@@ -132,6 +151,10 @@ void ABaseTank::Fire()
 			ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0),
 			this
 		)->InitBullet(this);
+
+		if (FireSound != nullptr) {
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, TurretMeshComponent->GetComponentLocation());
+		}
 	}
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_FireCooldown, this, &ABaseTank::ResetFire, FireCooldown, false);

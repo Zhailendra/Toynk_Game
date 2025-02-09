@@ -4,6 +4,8 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+class USoundCue;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOYNK_API UHealthComponent : public UActorComponent
@@ -25,6 +27,9 @@ private:
 	float MaxHealth = 100.0f;
 
 	float CurrentHealth = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Sound Properties")
+	USoundCue* ExplosionSound;
 
 	UFUNCTION()
 	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* Instigator, AActor* DamageCauser);

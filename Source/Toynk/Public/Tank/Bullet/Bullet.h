@@ -11,6 +11,7 @@
 class UPoolSubsystem;
 class UBoxComponent;
 class UHealthComponent;
+class USoundCue;
 
 UCLASS()
 class TOYNK_API ABullet : public AActor, public IPoolable
@@ -53,6 +54,15 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 	
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMeshComponent;
+
+		UPROPERTY(EditAnywhere, Category = "Sound Properties")
+		USoundCue* RicochetSound;
+
+		UPROPERTY(EditAnywhere, Category = "Sound Properties")
+		USoundCue* WallHitSound;
+
+		UPROPERTY(EditAnywhere, Category = "Sound Properties")
+		USoundCue* EnemyHitSound;
 	
 		FVector InitialPosition;
 		float MaxRange = 500.0f;
