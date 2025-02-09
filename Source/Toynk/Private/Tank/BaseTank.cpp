@@ -64,15 +64,14 @@ void ABaseTank::Tick(float DeltaTime)
 
 	if (PC)
 	{
+		ETraceTypeQuery TraceType = UEngineTypes::ConvertToTraceType(ECC_GameTraceChannel1);
 		FHitResult HitResult;
-		 bool bHit = PC->GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+		bool bHit = PC->GetHitResultUnderCursorByChannel(TraceType, false, HitResult);
 
 		if (bHit)
 		{
-			RotateToCursor(HitResult.ImpactPoint);
-		} else
-		{
-			DrawDebugLine(GetWorld(), TurretMeshComponent->GetComponentLocation(), HitResult.TraceEnd, FColor::Red, false, 0.1f, 0, 1.0f);
+			DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
+			RotateToCursor(HitResult.Location);
 		}
 	}
 
@@ -81,8 +80,9 @@ void ABaseTank::Tick(float DeltaTime)
 
 void ABaseTank::RotateToCursor(const FVector& LookAtTarget) const
 {
+	const FRotator FindLookAtRotation = UKismetMathLibrary::FindLookAtRotation(TurretMeshComponent->GetComponentLocation(), LookAtTarget);
 	const FVector ToTarget = LookAtTarget - TurretMeshComponent->GetComponentLocation();
-	const FRotator LookAtRotation = FRotator(0.0f, ToTarget.Rotation().Yaw + 95.f, 0.0f);
+	const FRotator LookAtRotation = FRotator(0.0f, FindLookAtRotation.Yaw + 90.0f, 0.0f);
 
 	TurretMeshComponent->SetWorldRotation(
 		FMath::RInterpTo(TurretMeshComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed),
@@ -111,7 +111,7 @@ void ABaseTank::RotateBodyTowardsMovementDirection() const
 			BaseMeshComponent->GetComponentRotation(),
 			AdjustedRotation,
 			GetWorld()->GetDeltaSeconds(),
-			2.5f
+			10.0f
 		);
 
 		BaseMeshComponent->SetWorldRotation(NewRotation);

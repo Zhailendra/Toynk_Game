@@ -80,7 +80,7 @@ void ABullet::Tick(float DeltaTime)
 		SetActorLocation(End);
 	}
 
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
 }
 
 void ABullet::InitBullet(APawn* Pawn)
