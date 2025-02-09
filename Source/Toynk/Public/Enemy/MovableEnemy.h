@@ -35,7 +35,7 @@ class TOYNK_API AMovableEnemy : public ABaseEnemy
 		UFloatingPawnMovement* MovementComponent;
 	
 		UPROPERTY(EditAnywhere, Category = "Movement")
-		float MoveSpeed = 100.f;
+		float MoveSpeed = 50.f;
 
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		float DistanceFromPlayer = 500.f;
