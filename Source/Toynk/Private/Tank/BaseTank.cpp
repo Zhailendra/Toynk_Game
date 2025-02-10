@@ -47,6 +47,8 @@ void ABaseTank::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ToynkGameInstance = Cast<UToynkGameInstance>(GetGameInstance());
+
 	PC = Cast<APlayerController>(GetController());
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
 	CurrentLandMines = 0;
@@ -199,4 +201,9 @@ void ABaseTank::DropLandMine()
 void ABaseTank::ResetDropMine()
 {
 	bCanDropMine = true;
+}
+
+UToynkGameInstance &ABaseTank::GetToynkGameInstance()
+{
+	return *ToynkGameInstance;
 }

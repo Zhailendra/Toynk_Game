@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Common/ToynkGameInstance.h"
 #include "BaseTank.generated.h"
 
 class UPoolSubsystem;
@@ -35,7 +36,11 @@ public:
 	void DropLandMine();
 	void ResetDropMine();
 
+	UToynkGameInstance &GetToynkGameInstance();
+
 protected:
+	UPROPERTY()
+	UToynkGameInstance* ToynkGameInstance;
 
 	UPROPERTY()
 	APlayerController* PC;

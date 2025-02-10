@@ -9,6 +9,11 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (ToynkGameInstance)
+	{
+		ToynkGameInstance->tankAmount += 1;
+	}
+
 	PlayerTank = Cast<APlayerTank>(UGameplayStatics::GetPlayerPawn(this, 0));
 
 	GetWorldTimerManager().SetTimer(FireRateTimerHandle, this, &ABaseEnemy::CheckFireCondition, FireRate, true);

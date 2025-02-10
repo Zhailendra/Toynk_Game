@@ -1,5 +1,6 @@
 #include "Components/HealthComponent.h"
 
+#include "Enemy/BaseEnemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
@@ -48,6 +49,12 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 
 		if (ExplosionSound != nullptr) {
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, DamagedActor->GetActorLocation());
+		}
+
+		ABaseEnemy* Enemy = Cast<ABaseEnemy>(DamagedActor);
+
+		if (Enemy) {
+			Enemy->GetToynkGameInstance().tankAmount -= 1;
 		}
 
 		GetOwner()->Destroy();
