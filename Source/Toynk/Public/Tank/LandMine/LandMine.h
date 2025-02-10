@@ -24,7 +24,10 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		virtual void OnSpawnFromPool_Implementation() override;
 		virtual void OnReturnToPool_Implementation() override;
 
+		void StartTimer();
+	
 		void Explode();
+		void PlayTickSound();
 
 	protected:
 		virtual void BeginPlay() override;
@@ -62,10 +65,20 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		UPROPERTY(EditAnywhere, Category = "Sound Properties")
 		USoundCue* ExplosionSound;
 
+		UPROPERTY(EditAnywhere, Category = "Sound Properties")
+		USoundCue* TickTickSound;
+
 		FTimerHandle TimerHandle_LifeTime;
+		FTimerHandle TickSoundTimerHandle;
 
 		UPROPERTY(EditAnywhere, Category = "Timers")
 		float LifeTime = 10.0f;
+	
+		float InitialTickInterval = 1.0f;
+	
+		float MinTickInterval = 0.1f;
+	
+		float LifeTimeRemaining;
 
 		UPROPERTY(EditAnywhere, Category = "Properties")
 		float ExplosionDamage = 100.0f;

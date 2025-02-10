@@ -71,6 +71,7 @@ void ALandMine::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 		{
 			bIsArmed = true;
 			SetActorHiddenInGame(false);
+			StartTimer();
 		}
 	}
  }
@@ -87,6 +88,8 @@ void ALandMine::ReturnToPool()
 		if (ExplosionSound != nullptr) {
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
 		}
+
+		GetWorld()->GetTimerManager().ClearTimer(TickSoundTimerHandle);
 
 		if (ExplosionEffect)
 		{
@@ -110,8 +113,8 @@ void ALandMine::OnSpawnFromPool_Implementation()
 	SetActorHiddenInGame(true);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	bIsArmed = false;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_LifeTime, this, &ALandMine::Explode, LifeTime, false);
-
+	LifeTimeRemaining = LifeTime;
+	
 	if (DeploySound != nullptr) {
 		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation());
 	}
@@ -125,8 +128,34 @@ void ALandMine::OnReturnToPool_Implementation()
 	bIsArmed = false;
 }
 
+void ALandMine::StartTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_LifeTime, this, &ALandMine::Explode, LifeTime, false);
+	PlayTickSound();
+}
+
 void ALandMine::Explode()
 {
 	ReturnToPool();
 }
+
+void ALandMine::PlayTickSound()
+{
+	if (TickTickSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, TickTickSound, GetActorLocation());
+	}
+
+	LifeTimeRemaining -= GetWorld()->GetTimerManager().GetTimerElapsed(TickSoundTimerHandle);
+
+	float Progress = LifeTimeRemaining / LifeTime;
+	float NewInterval = MinTickInterval + (InitialTickInterval - MinTickInterval) * FMath::Pow(Progress, 2);
+
+	if (LifeTimeRemaining > 0.0f)
+	{
+		GetWorld()->GetTimerManager().SetTimer(TickSoundTimerHandle, this, &ALandMine::PlayTickSound, NewInterval, false);
+	}
+}
+
+
 
