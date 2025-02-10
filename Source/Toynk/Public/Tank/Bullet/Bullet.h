@@ -11,6 +11,7 @@
 class UPoolSubsystem;
 class UBoxComponent;
 class UHealthComponent;
+class UNiagaraSystem;
 class USoundCue;
 
 UCLASS()
@@ -56,6 +57,12 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 	
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMeshComponent;
+
+		UPROPERTY(EditAnywhere, Category = "Properties")
+		UNiagaraSystem* ExplosionEffect;
+
+		UPROPERTY(EditAnywhere, Category = "Properties")
+		UNiagaraSystem* RicochetEffect;
 
 		UPROPERTY(EditAnywhere, Category = "Sound Properties")
 		USoundCue* RicochetSound;
