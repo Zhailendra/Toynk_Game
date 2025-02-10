@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+class UNiagaraSystem;
 class USoundCue;
 
 
@@ -27,6 +28,9 @@ private:
 	float MaxHealth = 100.0f;
 
 	float CurrentHealth = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Properties")
+	UNiagaraSystem* ExplosionEffect;
 
 	UPROPERTY(EditAnywhere, Category = "Sound Properties")
 	USoundCue* ExplosionSound;

@@ -2,6 +2,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "NiagaraFunctionLibrary.h"
 
 UHealthComponent::UHealthComponent()
 {
@@ -34,6 +35,16 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 	CurrentHealth -= Damage;
 	if (CurrentHealth <= 0) {
 		CurrentHealth = 0;
+
+		if (ExplosionEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				this,
+				ExplosionEffect,
+				DamagedActor->GetActorLocation(),
+				DamagedActor->GetActorRotation()
+			);
+		}
 
 		if (ExplosionSound != nullptr) {
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, DamagedActor->GetActorLocation());

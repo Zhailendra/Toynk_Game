@@ -53,8 +53,8 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		USceneComponent* ExplosionSpawnPoint;
 
-		/*UPROPERTY(EditAnywhere, Category = "Properties")
-		UNiagaraSystem* ExplosionEffect;*/
+		UPROPERTY(EditAnywhere, Category = "Properties")
+		UNiagaraSystem* ExplosionEffect;
 
 		UPROPERTY(EditAnywhere, Category = "Sound Properties")
 		USoundCue* DeploySound;

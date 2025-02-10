@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
 #include "Sound/SoundCue.h"
+#include "NiagaraFunctionLibrary.h"
 
 ALandMine::ALandMine()
 {
@@ -55,10 +56,6 @@ void ALandMine::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 			auto DamageTypeClass = UDamageType::StaticClass();
 			auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
 			UGameplayStatics::ApplyDamage(OtherActor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
-
-			if (ExplosionSound != nullptr) {
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
-			}
 			
 			ReturnToPool();
 		}
@@ -86,6 +83,22 @@ void ALandMine::InitLandMine(APawn* Pawn)
 
 void ALandMine::ReturnToPool()
 {
+	if (!IsHidden()) {
+		if (ExplosionSound != nullptr) {
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation());
+		}
+
+		if (ExplosionEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				this,
+				ExplosionEffect,
+				ExplosionSpawnPoint->GetComponentLocation(),
+				ExplosionSpawnPoint->GetComponentRotation()
+			);
+		}
+	}
+
 	if (PoolSubsystem)
 	{
 		PoolSubsystem->ReturnToPool(this);
