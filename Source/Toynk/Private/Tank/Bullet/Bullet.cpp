@@ -5,6 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "NiagaraFunctionLibrary.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
 
 ABullet::ABullet()
@@ -53,6 +54,16 @@ void ABullet::Tick(float DeltaTime)
 		{
 			Bounce++;
 
+			if (RicochetEffect)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					this,
+					RicochetEffect,
+					HitResult.ImpactPoint,
+					FRotationMatrix::MakeFromZ(HitResult.ImpactNormal).Rotator()
+				);
+			}
+
 			if (RicochetSound != nullptr) {
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), RicochetSound, GetActorLocation());
 			}
@@ -82,6 +93,17 @@ void ABullet::Tick(float DeltaTime)
 					UGameplayStatics::PlaySoundAtLocation(GetWorld(), WallHitSound, GetActorLocation());
 				}
 			}
+
+			if (ExplosionEffect)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+					this,
+					ExplosionEffect,
+					GetActorLocation(),
+					GetActorRotation()
+				);
+			}
+
 			if (PoolSubsystem)
 			{
 				Bounce = 0;
