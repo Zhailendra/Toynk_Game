@@ -11,7 +11,7 @@ void ABaseEnemy::BeginPlay()
 
 	if (ToynkGameInstance)
 	{
-		ToynkGameInstance->tankAmount += 1;
+		ToynkGameInstance->enemyLeft += 1;
 	}
 
 	PlayerTank = Cast<APlayerTank>(UGameplayStatics::GetPlayerPawn(this, 0));

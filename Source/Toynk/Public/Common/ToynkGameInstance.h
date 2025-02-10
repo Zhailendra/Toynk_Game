@@ -16,5 +16,8 @@ class TOYNK_API UToynkGameInstance : public UGameInstance
 	
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Data")
-	int tankAmount = 0;
+	int enemyLeft = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Data")
+	int killCount = 0;
 };

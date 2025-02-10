@@ -54,7 +54,8 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 		ABaseEnemy* Enemy = Cast<ABaseEnemy>(DamagedActor);
 
 		if (Enemy) {
-			Enemy->GetToynkGameInstance().tankAmount -= 1;
+			Enemy->GetToynkGameInstance().enemyLeft -= 1;
+			Enemy->GetToynkGameInstance().killCount += 1;
 		}
 
 		GetOwner()->Destroy();
