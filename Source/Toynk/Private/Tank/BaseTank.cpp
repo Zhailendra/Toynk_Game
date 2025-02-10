@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
 #include "Sound/SoundCue.h"
+#include "NiagaraFunctionLibrary.h"
 
 ABaseTank::ABaseTank()
 {
@@ -151,6 +152,16 @@ void ABaseTank::Fire()
 			ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0),
 			this
 		)->InitBullet(this);
+
+		if (FireEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				this,
+				FireEffect,
+				ProjectileSpawnPoint->GetComponentLocation(),
+				ProjectileSpawnPoint->GetComponentRotation()
+			);
+		}
 
 		if (FireSound != nullptr) {
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, TurretMeshComponent->GetComponentLocation());

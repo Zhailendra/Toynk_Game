@@ -9,6 +9,7 @@ class UPoolSubsystem;
 class UCapsuleComponent;
 class UBoxComponent;
 class UArrowComponent;
+class UNiagaraSystem;
 class USoundCue;
 
 class ABullet;
@@ -86,6 +87,9 @@ private:
 	FTimerHandle TimerHandle_FireCooldown;
 	FTimerHandle TimerHandle_DropMineCooldown;
 	float OldTick;
+
+	UPROPERTY(EditAnywhere, Category = "Properties")
+	UNiagaraSystem* FireEffect;
 
 	UPROPERTY(EditAnywhere, Category = "Sound Properties")
 	USoundCue* ChainSound;
