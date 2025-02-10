@@ -9,6 +9,7 @@ class UPoolSubsystem;
 class UNiagaraSystem;
 
 class UBoxComponent;
+class USphereComponent;
 class USoundCue;
 
 UCLASS()
@@ -46,6 +47,9 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 	private:
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UBoxComponent* BoxComponent;
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		USphereComponent* SphereComponent;
 	
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* MeshComponent;
@@ -72,7 +76,7 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		FTimerHandle TickSoundTimerHandle;
 
 		UPROPERTY(EditAnywhere, Category = "Timers")
-		float LifeTime = 10.0f;
+		float LifeTime = 5.0f;
 	
 		float InitialTickInterval = 1.0f;
 	
