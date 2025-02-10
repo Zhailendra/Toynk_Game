@@ -9,7 +9,7 @@ class UPoolSubsystem;
 class UNiagaraSystem;
 
 class UBoxComponent;
-class USphereComponent;
+class UCapsuleComponent;
 class USoundCue;
 
 UCLASS()
@@ -36,10 +36,13 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		void ReturnToPool();
 
 		UFUNCTION()
-		void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 		UFUNCTION()
-		void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+		UFUNCTION()
+		void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 		UPROPERTY()
 		UPoolSubsystem* PoolSubsystem;
@@ -49,7 +52,7 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		UBoxComponent* BoxComponent;
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-		USphereComponent* SphereComponent;
+		UCapsuleComponent* CapsuleComponent;
 	
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* MeshComponent;

@@ -25,6 +25,8 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 		virtual void Tick(float DeltaTime) override;
 
 		void InitBullet(APawn* Pawn);
+
+		void ReturnToPool();
 	
 		virtual void OnSpawnFromPool_Implementation() override;
 		virtual void OnReturnToPool_Implementation() override;

@@ -1,11 +1,13 @@
 #include "Tank/LandMine/LandMine.h"
 
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Tank/Bullet/Bullet.h"
 
 ALandMine::ALandMine()
 {
@@ -16,6 +18,9 @@ ALandMine::ALandMine()
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
 	MeshComponent->SetupAttachment(BoxComponent);
+
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+	CapsuleComponent->SetupAttachment(MeshComponent);
 
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	SceneComponent->SetupAttachment(MeshComponent);
@@ -32,8 +37,12 @@ ALandMine::ALandMine()
 	}
 	if (BoxComponent)
 	{
-		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnOverlapBegin);
-		BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ALandMine::OnOverlapEnd);
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnBoxOverlapBegin);
+		BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ALandMine::OnBoxOverlapEnd);
+	}
+	if (CapsuleComponent)
+	{
+		CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnCapsuleOverlapBegin);
 	}
 }
 
@@ -45,7 +54,7 @@ void ALandMine::BeginPlay()
 	LifeTime = 10.0f;
 }
 
-void ALandMine::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ALandMine::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
@@ -62,7 +71,7 @@ void ALandMine::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
 	}
 }
 
-void ALandMine::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ALandMine::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
  	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
  {
 	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
@@ -75,6 +84,21 @@ void ALandMine::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* O
 		}
 	}
  }
+
+void ALandMine::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->ActorHasTag("ProjectileActor"))
+	{
+		ABullet* Bullet = Cast<ABullet>(OtherActor);
+
+		if (Bullet)
+		{
+			Bullet->ReturnToPool();
+		}
+		Explode();
+	}
+}
+
 
 void ALandMine::InitLandMine(APawn* Pawn)
 {

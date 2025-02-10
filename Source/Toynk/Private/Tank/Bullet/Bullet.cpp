@@ -11,6 +11,8 @@ ABullet::ABullet()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Tags.Add(FName("ProjectileActor"));
+
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	RootComponent = BoxComponent;
 	
@@ -101,6 +103,12 @@ void ABullet::InitBullet(APawn* Pawn)
 {
 	SetOwner(Pawn);
 }
+
+void ABullet::ReturnToPool()
+{
+	PoolSubsystem->ReturnToPool(this);
+}
+
 
 void ABullet::OnSpawnFromPool_Implementation()
 {
