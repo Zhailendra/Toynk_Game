@@ -23,7 +23,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-private:	
+private:
 	UPROPERTY(EditAnywhere, Category = "Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MaxHealth = 100.0f;
 

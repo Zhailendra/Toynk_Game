@@ -2,6 +2,7 @@
 
 #include "Tank/Bullet/Bullet.h"
 #include "Tank/LandMine/LandMine.h"
+#include "Common/ToynkGameMode.h"
 
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -48,6 +49,7 @@ void ABaseTank::BeginPlay()
 	Super::BeginPlay();
 
 	ToynkGameInstance = Cast<UToynkGameInstance>(GetGameInstance());
+	ToynkGameMode = Cast<AToynkGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	PC = Cast<APlayerController>(GetController());
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
@@ -205,7 +207,12 @@ void ABaseTank::ResetDropMine()
 	bCanDropMine = true;
 }
 
-UToynkGameInstance &ABaseTank::GetToynkGameInstance()
+UToynkGameInstance* ABaseTank::GetToynkGameInstance()
 {
-	return *ToynkGameInstance;
+	return ToynkGameInstance;
+}
+
+AToynkGameMode* ABaseTank::GetToynkGameMode()
+{
+	return ToynkGameMode;
 }

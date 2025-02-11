@@ -3,3 +3,12 @@
 
 #include "Common/ToynkGameInstance.h"
 
+int UToynkGameInstance::GetKillCount()
+{
+	return killCount;
+}
+
+void UToynkGameInstance::IncrementKillCount()
+{
+	killCount++;
+}

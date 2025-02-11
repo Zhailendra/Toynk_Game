@@ -13,11 +13,15 @@ UCLASS()
 class TOYNK_API UToynkGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Data")
-	int enemyLeft = 0;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Game Data")
+public:
+	UFUNCTION(BlueprintCallable)
+	int GetKillCount();
+
+	UFUNCTION(BlueprintCallable)
+	void IncrementKillCount();
+	
+private:
+	UPROPERTY(EditAnywhere, Category = "Game Data")
 	int killCount = 0;
 };
