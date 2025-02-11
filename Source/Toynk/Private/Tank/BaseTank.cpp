@@ -74,8 +74,10 @@ void ABaseTank::Tick(float DeltaTime)
 
 		if (bHit)
 		{
-			//DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
 			RotateToCursor(HitResult.Location);
+		} else
+		{
+			DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
 		}
 
 		if (GetVelocity().Size() > 0)

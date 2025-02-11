@@ -5,6 +5,7 @@
 #include "ObjectPoolIng/Poolable.h"
 #include "LandMine.generated.h"
 
+class USphereComponent;
 class UPoolSubsystem;
 class UNiagaraSystem;
 
@@ -44,6 +45,9 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		UFUNCTION()
 		void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+		UFUNCTION()
+		void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		
 		UPROPERTY()
 		UPoolSubsystem* PoolSubsystem;
 
@@ -53,6 +57,9 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UCapsuleComponent* CapsuleComponent;
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		USphereComponent* SphereComponent;
 	
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* MeshComponent;
@@ -92,5 +99,7 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 
 		UPROPERTY(EditAnywhere, Category = "Properties")
 		bool bIsArmed;
+
+		bool bIsExploding;
 
 };

@@ -2,6 +2,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
@@ -13,6 +14,8 @@ ALandMine::ALandMine()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	Tags.Add(FName("LandMine"));
+
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(GetRootComponent());
 
@@ -22,12 +25,16 @@ ALandMine::ALandMine()
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	CapsuleComponent->SetupAttachment(MeshComponent);
 
+	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	SphereComponent->SetupAttachment(MeshComponent);
+
 	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
 	SceneComponent->SetupAttachment(MeshComponent);
 	ExplosionSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ExplosionSpawnPoint"));
 	ExplosionSpawnPoint->SetupAttachment(SceneComponent);
 
 	bIsArmed = false;
+	bIsExploding = false;
 
 	if (MeshComponent)
 	{
@@ -44,6 +51,10 @@ ALandMine::ALandMine()
 	{
 		CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnCapsuleOverlapBegin);
 	}
+	if (SphereComponent)
+	{
+		SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnSphereOverlapBegin);
+	}
 }
 
 void ALandMine::BeginPlay()
@@ -57,7 +68,6 @@ void ALandMine::BeginPlay()
 void ALandMine::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
 	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
 	{
 		if (bIsArmed)
@@ -66,7 +76,7 @@ void ALandMine::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 			auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
 			UGameplayStatics::ApplyDamage(OtherActor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
 			
-			ReturnToPool();
+			Explode();
 		}
 	}
 }
@@ -99,11 +109,39 @@ void ALandMine::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
+void ALandMine::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, ("SPhereOverlap"));
+		if (bIsExploding)
+		{
+			if (OtherActor->ActorHasTag("LandMine"))
+			{
+				ALandMine* OtherLandMine = Cast<ALandMine>(OtherActor);
+
+				if (OtherLandMine)
+				{
+					OtherLandMine->Explode();
+				}
+			} else
+			{
+				auto DamageTypeClass = UDamageType::StaticClass();
+				auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
+				UGameplayStatics::ApplyDamage(OtherActor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
+			}
+			Explode();
+		}
+	}
+}
 
 void ALandMine::InitLandMine(APawn* Pawn)
 {
 	SetOwner(Pawn);
+
 	bIsArmed = false;
+	bIsExploding = false;
 }
 
 void ALandMine::ReturnToPool()
@@ -136,6 +174,8 @@ void ALandMine::OnSpawnFromPool_Implementation()
 {
 	SetActorHiddenInGame(true);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	bIsArmed = false;
 	LifeTimeRemaining = LifeTime;
 	
@@ -149,6 +189,8 @@ void ALandMine::OnReturnToPool_Implementation()
 	SetOwner(nullptr);
 	SetActorHiddenInGame(true);
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	bIsArmed = false;
 }
 
@@ -160,6 +202,7 @@ void ALandMine::StartTimer()
 
 void ALandMine::Explode()
 {
+	bIsExploding = true;
 	ReturnToPool();
 }
 
