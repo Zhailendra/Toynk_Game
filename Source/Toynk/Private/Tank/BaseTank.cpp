@@ -2,6 +2,7 @@
 
 #include "Tank/Bullet/Bullet.h"
 #include "Tank/LandMine/LandMine.h"
+#include "Common/ToynkGameMode.h"
 
 #include "Components/ArrowComponent.h"
 #include "Components/BoxComponent.h"
@@ -48,6 +49,7 @@ void ABaseTank::BeginPlay()
 	Super::BeginPlay();
 
 	ToynkGameInstance = Cast<UToynkGameInstance>(GetGameInstance());
+	ToynkGameMode = Cast<AToynkGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	PC = Cast<APlayerController>(GetController());
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
@@ -74,36 +76,46 @@ void ABaseTank::Tick(float DeltaTime)
 
 		if (bHit)
 		{
-			//DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
 			RotateToCursor(HitResult.Location);
+		} else
+		{
+			DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
 		}
 
-		if (GetVelocity().Size() > 0)
-		{
-			OldTick += DeltaTime;
-
-			if (OldTick > 0.1f)
-			{
-				if (ChainSound != nullptr)
-				{
-					UGameplayStatics::PlaySoundAtLocation(GetWorld(), ChainSound, GetMesh()->GetComponentLocation());
-				}
-				OldTick = 0;
-			}
-		}
-		else
-		{
-			OldTick = 0;
-		}
+		ManageChainSound(DeltaTime);
 	}
 
 	RotateBodyTowardsMovementDirection();
 }
 
+void ABaseTank::ManageChainSound(const float DeltaTime)
+{
+	if (GetVelocity().Size() > 0)
+	{
+		OldTick += DeltaTime;
+
+		if (OldTick > 0.1f)
+		{
+			if (ChainSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(),
+					ChainSound,
+					GetMesh()->GetComponentLocation(),
+					0.3f
+					);
+			}
+			OldTick = 0;
+		}
+	}
+	else
+	{
+		OldTick = 0;
+	}
+}
+
 void ABaseTank::RotateToCursor(const FVector& LookAtTarget) const
 {
 	const FRotator FindLookAtRotation = UKismetMathLibrary::FindLookAtRotation(TurretMeshComponent->GetComponentLocation(), LookAtTarget);
-	const FVector ToTarget = LookAtTarget - TurretMeshComponent->GetComponentLocation();
 	const FRotator LookAtRotation = FRotator(0.0f, FindLookAtRotation.Yaw + 90.0f, 0.0f);
 
 	TurretMeshComponent->SetWorldRotation(
@@ -203,7 +215,12 @@ void ABaseTank::ResetDropMine()
 	bCanDropMine = true;
 }
 
-UToynkGameInstance &ABaseTank::GetToynkGameInstance()
+UToynkGameInstance* ABaseTank::GetToynkGameInstance()
 {
-	return *ToynkGameInstance;
+	return ToynkGameInstance;
+}
+
+AToynkGameMode* ABaseTank::GetToynkGameMode()
+{
+	return ToynkGameMode;
 }

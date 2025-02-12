@@ -23,11 +23,15 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void AddCoins(const int CoinsToAdd);
+
 protected:
 
 	void Move(const FInputActionValue& Value);
-	
 private:
+
+	UPROPERTY(EditAnywhere, Category = "Player Coins", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	int CoinsAmount;
 	
 	UPROPERTY(EditAnywhere, Category = "Player Input")
 	UInputMappingContext* PlayerContext;

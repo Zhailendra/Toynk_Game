@@ -5,6 +5,7 @@
 #include "ObjectPoolIng/Poolable.h"
 #include "LandMine.generated.h"
 
+class USphereComponent;
 class UPoolSubsystem;
 class UNiagaraSystem;
 
@@ -33,6 +34,8 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 	protected:
 		virtual void BeginPlay() override;
 
+		void ApplyDamageTo(AActor* Actor);
+
 		void ReturnToPool();
 
 		UFUNCTION()
@@ -53,6 +56,9 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UCapsuleComponent* CapsuleComponent;
+
+		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+		USphereComponent* SphereComponent;
 	
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* MeshComponent;
@@ -92,5 +98,7 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 
 		UPROPERTY(EditAnywhere, Category = "Properties")
 		bool bIsArmed;
+
+		bool bIsExploding;
 
 };

@@ -1,4 +1,5 @@
 #include "Components/HealthComponent.h"
+#include "Common/ToynkGameMode.h"
 
 #include "Enemy/BaseEnemy.h"
 #include "Kismet/GameplayStatics.h"
@@ -8,7 +9,6 @@
 UHealthComponent::UHealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 
@@ -18,9 +18,7 @@ void UHealthComponent::BeginPlay()
 	CurrentHealth = MaxHealth;
 
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
-
 }
-
 
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -54,8 +52,8 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 		ABaseEnemy* Enemy = Cast<ABaseEnemy>(DamagedActor);
 
 		if (Enemy) {
-			Enemy->GetToynkGameInstance().enemyLeft -= 1;
-			Enemy->GetToynkGameInstance().killCount += 1;
+			Enemy->GetToynkGameMode()->SetEnemyCount(Enemy->GetToynkGameMode()->GetEnemyCount() - 1);
+			Enemy->GetToynkGameInstance()->IncrementKillCount();
 		}
 
 		GetOwner()->Destroy();

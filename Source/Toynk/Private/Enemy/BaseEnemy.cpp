@@ -1,5 +1,6 @@
 #include "Enemy/BaseEnemy.h"
 
+#include "Common/ToynkGameMode.h"
 #include "Tank/PlayerTank.h"
 
 #include "Kismet/GameplayStatics.h"
@@ -9,9 +10,9 @@ void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (ToynkGameInstance)
+	if (ToynkGameMode)
 	{
-		ToynkGameInstance->enemyLeft += 1;
+		ToynkGameMode->SetEnemyCount(ToynkGameMode->GetEnemyCount() + 1);
 	}
 
 	PlayerTank = Cast<APlayerTank>(UGameplayStatics::GetPlayerPawn(this, 0));

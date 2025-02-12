@@ -8,6 +8,7 @@
  * 
  */
 
+class UNiagaraComponent;
 class UPoolSubsystem;
 class UBoxComponent;
 class UHealthComponent;
@@ -33,6 +34,13 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 		virtual void OnReturnToPool_Implementation() override;
 
 	protected:
+
+		void StartEffect() const;
+		void PlaySound() const;
+
+		UFUNCTION()
+		void OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float BulletSpeed = 1500.0f;
 
@@ -58,10 +66,10 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMeshComponent;
 
-		UPROPERTY(EditAnywhere, Category = "Properties")
+		UPROPERTY(EditAnywhere, Category = "Niagra")
 		UNiagaraSystem* ExplosionEffect;
 
-		UPROPERTY(EditAnywhere, Category = "Properties")
+		UPROPERTY(EditAnywhere, Category = "Niagra")
 		UNiagaraSystem* RicochetEffect;
 
 		UPROPERTY(EditAnywhere, Category = "Sound Properties")

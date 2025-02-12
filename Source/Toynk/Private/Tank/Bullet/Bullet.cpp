@@ -22,6 +22,17 @@ ABullet::ABullet()
 	BaseMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
 	InitialPosition = GetActorLocation();
+
+	if (BoxComponent)
+	{
+		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnBoxOverlapBegin);
+		BoxComponent->SetEnableGravity(false);
+	}
+
+	if (BaseMeshComponent)
+	{
+		BaseMeshComponent->SetEnableGravity(false);
+	}
 }
 
 void ABullet::BeginPlay()
@@ -78,16 +89,14 @@ void ABullet::Tick(float DeltaTime)
 		}
 		else 
 		{
-			if (OtherActor /*&& OtherActor != GetOwner()*/ && HealthComp)
+			if (OtherActor && !OtherActor->ActorHasTag("DestroyableWall") && HealthComp)
 			{
 				AController* MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
 				if (MyOwnerInstigator)
 				{
 					UGameplayStatics::ApplyDamage(OtherActor, Damage, MyOwnerInstigator, this, UDamageType::StaticClass());
 
-					if (EnemyHitSound != nullptr) {
-						UGameplayStatics::PlaySoundAtLocation(GetWorld(), EnemyHitSound, GetActorLocation());
-					}
+					PlaySound();
 				}
 			}
 			else {
@@ -96,15 +105,7 @@ void ABullet::Tick(float DeltaTime)
 				}
 			}
 
-			if (ExplosionEffect)
-			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-					this,
-					ExplosionEffect,
-					GetActorLocation(),
-					GetActorRotation()
-				);
-			}
+			StartEffect();
 
 			if (PoolSubsystem)
 			{
@@ -119,6 +120,39 @@ void ABullet::Tick(float DeltaTime)
 	}
 
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 2.0f);
+}
+
+void ABullet::StartEffect() const
+{
+	if (ExplosionEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			ExplosionEffect,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+	}
+}
+
+void ABullet::PlaySound() const
+{
+	if (EnemyHitSound != nullptr) {
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), EnemyHitSound, GetActorLocation());
+	}
+}
+
+
+void ABullet::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor->ActorHasTag("ProjectileActor"))
+	{
+		PlaySound();
+		StartEffect();
+		ReturnToPool();
+		PoolSubsystem->ReturnToPool(OtherActor);
+	}
 }
 
 void ABullet::InitBullet(APawn* Pawn)
@@ -148,4 +182,3 @@ void ABullet::OnReturnToPool_Implementation()
 	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	bIsActive = false;
 }
-

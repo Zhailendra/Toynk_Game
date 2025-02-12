@@ -13,6 +13,7 @@ class UArrowComponent;
 class UNiagaraSystem;
 class USoundCue;
 
+class AToynkGameMode;
 class ABullet;
 class ALandMine;
 
@@ -36,11 +37,17 @@ public:
 	void DropLandMine();
 	void ResetDropMine();
 
-	UToynkGameInstance &GetToynkGameInstance();
+	void ManageChainSound(const float DeltaTime);
+
+	UToynkGameInstance* GetToynkGameInstance();
+	AToynkGameMode* GetToynkGameMode();
 
 protected:
 	UPROPERTY()
 	UToynkGameInstance* ToynkGameInstance;
+
+	UPROPERTY()
+	AToynkGameMode* ToynkGameMode;
 
 	UPROPERTY()
 	APlayerController* PC;
