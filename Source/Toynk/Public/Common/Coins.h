@@ -2,27 +2,34 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BaseWall.generated.h"
+#include "ObjectPoolIng/Poolable.h"
+#include "Coins.generated.h"
 
 class UPoolSubsystem;
 
-class ACoins;
 class UBoxComponent;
 
+class APlayerTank;
+
 UCLASS()
-class TOYNK_API ABaseWall : public AActor
+class TOYNK_API ACoins : public AActor, public IPoolable 
 {
 	GENERATED_BODY()
 	
 public:	
-	ABaseWall();
+	ACoins();
 
-	void SpawnCoins() const;
+	void ReturnToPool();
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	
+	virtual void OnSpawnFromPool_Implementation() override;
+	virtual void OnReturnToPool_Implementation() override;
 
+	UFUNCTION()
+	void OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 private:
 
@@ -35,19 +42,10 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* BaseMeshComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* CoinsSpawnPoint;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	UActorComponent* HealthComponent;
-
-	UPROPERTY(EditAnywhere, Category = "Coins")
-	TSubclassOf<ACoins> CoinsClass;
-	
 	UPROPERTY()
 	UPoolSubsystem* PoolSubsystem;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	float CoinsSpawnChance = 0.1f;
-
+	UPROPERTY()
+	APlayerTank* PlayerTank;
+	
 };

@@ -5,12 +5,16 @@
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Common/Coins.h"
+#include "Components/BoxComponent.h"
 
 class ABase_Level;
 
 APlayerTank::APlayerTank()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	CoinsAmount = 0;
 }
 
 void APlayerTank::BeginPlay()
@@ -71,6 +75,11 @@ void APlayerTank::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	}
 }
 
+void APlayerTank::AddCoins(const int CoinsToAdd)
+{
+	CoinsAmount += CoinsToAdd;
+}
+
 void APlayerTank::Move(const FInputActionValue& Value)
 {
 	const FVector2D MoveDirection = Value.Get<FVector2D>();
@@ -87,4 +96,3 @@ void APlayerTank::Move(const FInputActionValue& Value)
 	AddMovementInput(ForwardVector, Y);
 	AddMovementInput(RightVector, X);
 }
-

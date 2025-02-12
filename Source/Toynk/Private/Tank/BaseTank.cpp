@@ -116,7 +116,6 @@ void ABaseTank::ManageChainSound(const float DeltaTime)
 void ABaseTank::RotateToCursor(const FVector& LookAtTarget) const
 {
 	const FRotator FindLookAtRotation = UKismetMathLibrary::FindLookAtRotation(TurretMeshComponent->GetComponentLocation(), LookAtTarget);
-	const FVector ToTarget = LookAtTarget - TurretMeshComponent->GetComponentLocation();
 	const FRotator LookAtRotation = FRotator(0.0f, FindLookAtRotation.Yaw + 90.0f, 0.0f);
 
 	TurretMeshComponent->SetWorldRotation(

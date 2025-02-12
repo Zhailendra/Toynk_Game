@@ -8,6 +8,7 @@
  * 
  */
 
+class UNiagaraComponent;
 class UPoolSubsystem;
 class UBoxComponent;
 class UHealthComponent;
@@ -65,10 +66,10 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 		UStaticMeshComponent* BaseMeshComponent;
 
-		UPROPERTY(EditAnywhere, Category = "Properties")
+		UPROPERTY(EditAnywhere, Category = "Niagra")
 		UNiagaraSystem* ExplosionEffect;
 
-		UPROPERTY(EditAnywhere, Category = "Properties")
+		UPROPERTY(EditAnywhere, Category = "Niagra")
 		UNiagaraSystem* RicochetEffect;
 
 		UPROPERTY(EditAnywhere, Category = "Sound Properties")

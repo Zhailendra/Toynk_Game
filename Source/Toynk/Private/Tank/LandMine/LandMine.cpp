@@ -8,6 +8,7 @@
 #include "ObjectPoolIng/PoolSubsystem.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Level/Walls/BaseWall.h"
 #include "Tank/Bullet/Bullet.h"
 
 ALandMine::ALandMine()
@@ -140,30 +141,6 @@ void ALandMine::ReturnToPool()
 	}
 }
 
-void ALandMine::OnSpawnFromPool_Implementation()
-{
-	SetActorHiddenInGame(true);
-	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	bIsArmed = false;
-	LifeTimeRemaining = LifeTime;
-	
-	if (DeploySound != nullptr) {
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation());
-	}
-}
-
-void ALandMine::OnReturnToPool_Implementation()
-{
-	SetOwner(nullptr);
-	SetActorHiddenInGame(true);
-	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	bIsArmed = false;
-}
-
 void ALandMine::StartTimer()
 {
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle_LifeTime, this, &ALandMine::Explode, LifeTime, false);
@@ -178,8 +155,13 @@ void ALandMine::Explode()
 
 	SphereComponent->GetOverlappingActors(OverlappingActors);
 
-	for (auto OverlappingActor : OverlappingActors)
+	for (AActor* OverlappingActor : OverlappingActors)
 	{
+		if (ABaseWall* Wall = Cast<ABaseWall>(OverlappingActor))
+		{
+			Wall->SpawnCoins();
+		}
+		
 		ApplyDamageTo(OverlappingActor);
 	}
 	
@@ -204,5 +186,26 @@ void ALandMine::PlayTickSound()
 	}
 }
 
+void ALandMine::OnSpawnFromPool_Implementation()
+{
+	SetActorHiddenInGame(true);
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	bIsArmed = false;
+	LifeTimeRemaining = LifeTime;
+	
+	if (DeploySound != nullptr) {
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation());
+	}
+}
 
-
+void ALandMine::OnReturnToPool_Implementation()
+{
+	SetOwner(nullptr);
+	SetActorHiddenInGame(true);
+	BoxComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	bIsArmed = false;
+}

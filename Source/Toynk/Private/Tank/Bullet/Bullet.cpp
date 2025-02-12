@@ -26,6 +26,12 @@ ABullet::ABullet()
 	if (BoxComponent)
 	{
 		BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnBoxOverlapBegin);
+		BoxComponent->SetEnableGravity(false);
+	}
+
+	if (BaseMeshComponent)
+	{
+		BaseMeshComponent->SetEnableGravity(false);
 	}
 }
 
