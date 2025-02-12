@@ -34,6 +34,8 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 	protected:
 		virtual void BeginPlay() override;
 
+		void ApplyDamageTo(AActor* Actor);
+
 		void ReturnToPool();
 
 		UFUNCTION()
@@ -45,9 +47,6 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		UFUNCTION()
 		void OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-		UFUNCTION()
-		void OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-		
 		UPROPERTY()
 		UPoolSubsystem* PoolSubsystem;
 

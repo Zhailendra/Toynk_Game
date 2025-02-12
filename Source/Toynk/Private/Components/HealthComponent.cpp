@@ -20,7 +20,6 @@ void UHealthComponent::BeginPlay()
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UHealthComponent::DamageTaken);
 }
 
-
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -28,7 +27,7 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* Instigator, AActor* DamageCauser)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, ("Damage taken"));
+	//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, ("Damage taken"));
 
 	if (Damage <= 0.f) return;
 

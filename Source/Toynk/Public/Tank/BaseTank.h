@@ -37,6 +37,8 @@ public:
 	void DropLandMine();
 	void ResetDropMine();
 
+	void ManageChainSound(const float DeltaTime);
+
 	UToynkGameInstance* GetToynkGameInstance();
 	AToynkGameMode* GetToynkGameMode();
 

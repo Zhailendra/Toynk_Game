@@ -82,26 +82,35 @@ void ABaseTank::Tick(float DeltaTime)
 			DrawDebugLine(GetWorld(), GetMesh()->GetComponentLocation(), HitResult.Location, FColor::Red, false, 0.1f, 0, 1.0f);
 		}
 
-		if (GetVelocity().Size() > 0)
-		{
-			OldTick += DeltaTime;
-
-			if (OldTick > 0.1f)
-			{
-				if (ChainSound != nullptr)
-				{
-					UGameplayStatics::PlaySoundAtLocation(GetWorld(), ChainSound, GetMesh()->GetComponentLocation());
-				}
-				OldTick = 0;
-			}
-		}
-		else
-		{
-			OldTick = 0;
-		}
+		ManageChainSound(DeltaTime);
 	}
 
 	RotateBodyTowardsMovementDirection();
+}
+
+void ABaseTank::ManageChainSound(const float DeltaTime)
+{
+	if (GetVelocity().Size() > 0)
+	{
+		OldTick += DeltaTime;
+
+		if (OldTick > 0.1f)
+		{
+			if (ChainSound != nullptr)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(),
+					ChainSound,
+					GetMesh()->GetComponentLocation(),
+					0.3f
+					);
+			}
+			OldTick = 0;
+		}
+	}
+	else
+	{
+		OldTick = 0;
+	}
 }
 
 void ABaseTank::RotateToCursor(const FVector& LookAtTarget) const

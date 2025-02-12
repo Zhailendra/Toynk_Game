@@ -33,6 +33,13 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 		virtual void OnReturnToPool_Implementation() override;
 
 	protected:
+
+		void StartEffect() const;
+		void PlaySound() const;
+
+		UFUNCTION()
+		void OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		float BulletSpeed = 1500.0f;
 

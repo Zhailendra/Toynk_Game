@@ -51,10 +51,6 @@ ALandMine::ALandMine()
 	{
 		CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnCapsuleOverlapBegin);
 	}
-	if (SphereComponent)
-	{
-		SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ALandMine::OnSphereOverlapBegin);
-	}
 }
 
 void ALandMine::BeginPlay()
@@ -66,18 +62,12 @@ void ALandMine::BeginPlay()
 }
 
 void ALandMine::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                               UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
+	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor") && bIsArmed)
 	{
-		if (bIsArmed)
-		{
-			auto DamageTypeClass = UDamageType::StaticClass();
-			auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
-			UGameplayStatics::ApplyDamage(OtherActor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
-			
-			Explode();
-		}
+		ApplyDamageTo(OtherActor);
+		Explode();
 	}
 }
 
@@ -97,7 +87,7 @@ void ALandMine::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor
 
 void ALandMine::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->ActorHasTag("ProjectileActor"))
+	if (OtherActor && OtherActor->ActorHasTag("ProjectileActor") && bIsArmed)
 	{
 		ABullet* Bullet = Cast<ABullet>(OtherActor);
 
@@ -109,39 +99,19 @@ void ALandMine::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, 
 	}
 }
 
-void ALandMine::OnSphereOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, ("SPhereOverlap"));
-		if (bIsExploding)
-		{
-			if (OtherActor->ActorHasTag("LandMine"))
-			{
-				ALandMine* OtherLandMine = Cast<ALandMine>(OtherActor);
-
-				if (OtherLandMine)
-				{
-					OtherLandMine->Explode();
-				}
-			} else
-			{
-				auto DamageTypeClass = UDamageType::StaticClass();
-				auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
-				UGameplayStatics::ApplyDamage(OtherActor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
-			}
-			Explode();
-		}
-	}
-}
-
 void ALandMine::InitLandMine(APawn* Pawn)
 {
 	SetOwner(Pawn);
 
 	bIsArmed = false;
 	bIsExploding = false;
+}
+
+void ALandMine::ApplyDamageTo(AActor* Actor)
+{
+	auto DamageTypeClass = UDamageType::StaticClass();
+	auto MyOwnerInstigator = GetOwner() ? GetOwner()->GetInstigatorController() : nullptr;
+	UGameplayStatics::ApplyDamage(Actor, ExplosionDamage, MyOwnerInstigator, this, DamageTypeClass);
 }
 
 void ALandMine::ReturnToPool()
@@ -203,6 +173,16 @@ void ALandMine::StartTimer()
 void ALandMine::Explode()
 {
 	bIsExploding = true;
+
+	TArray<AActor* > OverlappingActors;
+
+	SphereComponent->GetOverlappingActors(OverlappingActors);
+
+	for (auto OverlappingActor : OverlappingActors)
+	{
+		ApplyDamageTo(OverlappingActor);
+	}
+	
 	ReturnToPool();
 }
 
