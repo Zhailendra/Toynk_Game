@@ -85,6 +85,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BoxComponent;
 
+	FTimerHandle TimerHandle_DropMineCooldown;
+	FTimerHandle TimerHandle_FireCooldown;
+
+	UPROPERTY(EditAnywhere, Category = "Cooldowns")
+	float FireCooldown = 1.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Cooldowns")
+	float DropMineCooldown = 3.0f;
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Common Properties")
@@ -96,8 +105,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Tank Properties")
 	int CurrentLandMines = 0;
 
-	FTimerHandle TimerHandle_FireCooldown;
-	FTimerHandle TimerHandle_DropMineCooldown;
 	float OldTick;
 
 	UPROPERTY(EditAnywhere, Category = "Properties")
@@ -108,12 +115,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Sound Properties")
 	USoundCue* FireSound;
-
-	UPROPERTY(EditAnywhere, Category = "Cooldowns")
-	float FireCooldown = 1.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Cooldowns")
-	float DropMineCooldown = 3.0f;
 
 	bool bCanFire = true;
 	bool bCanDropMine = true;

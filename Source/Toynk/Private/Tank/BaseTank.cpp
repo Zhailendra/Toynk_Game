@@ -158,7 +158,7 @@ void ABaseTank::Fire()
 
 	bCanFire = false;
 
-	if (Controller && PoolSubsystem)
+	if (Controller && PoolSubsystem && BulletClass)
 	{
 		PoolSubsystem->SpawnFromPool<ABullet>(
 			BulletClass,
@@ -196,7 +196,7 @@ void ABaseTank::DropLandMine()
 
 	bCanDropMine = false;
 
-	if (Controller && PoolSubsystem && CurrentLandMines < MaxLandMines)
+	if (Controller && PoolSubsystem && CurrentLandMines < MaxLandMines && LandMineClass)
 	{
 		CurrentLandMines++;
 		PoolSubsystem->SpawnFromPool<ALandMine>(

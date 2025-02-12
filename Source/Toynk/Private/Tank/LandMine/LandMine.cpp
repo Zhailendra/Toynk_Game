@@ -196,7 +196,7 @@ void ALandMine::OnSpawnFromPool_Implementation()
 	LifeTimeRemaining = LifeTime;
 	
 	if (DeploySound != nullptr) {
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation(), 0.2);
 	}
 }
 
