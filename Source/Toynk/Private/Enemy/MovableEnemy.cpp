@@ -1,12 +1,14 @@
 #include "Enemy/MovableEnemy.h"
-
 #include "Tank/PlayerTank.h"
 
 #include "AIController.h"
 #include "NavigationSystem.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Navigation/PathFollowingComponent.h"
 #include "Perception/PawnSensingComponent.h"
+#include "DrawDebugHelpers.h"
+#include "TimerManager.h"
 
 AMovableEnemy::AMovableEnemy()
 {
@@ -26,7 +28,10 @@ void AMovableEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	bIsPlayerSeen = false;
+	bIsNotFollowingPlayer = false;
 	EnemyAIController = Cast<AAIController>(GetController());
+
+	PlayerTank = Cast<APlayerTank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
 	RandomRoam();
 }
@@ -35,9 +40,17 @@ void AMovableEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	if (bIsPlayerSeen)
+	{
+		CheckIfPlayerStillVisible();
+	}
+	else if (!EnemyAIController->IsFollowingAPath()) 
+	{
+		RandomRoam();
+	}
 }
 
-void AMovableEnemy::RandomRoam() const
+void AMovableEnemy::RandomRoam()
 {
 	if (!EnemyAIController) return;
 
@@ -45,47 +58,94 @@ void AMovableEnemy::RandomRoam() const
 	FNavLocation RandomLocation;
 
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	if (NavSystem && NavSystem->GetRandomReachablePointInRadius(Origin, 1000.f, RandomLocation)) 
+	if (NavSystem)
 	{
-		FVector Destination = RandomLocation.Location;
+		int Attempts = 5;
+		while (Attempts-- > 0)
+		{
+			if (NavSystem->GetRandomReachablePointInRadius(Origin, 1000.f, RandomLocation))
+			{
+				FVector Destination = RandomLocation.Location;
+				
+				FRotator TargetRotation = (Destination - GetActorLocation()).Rotation();
+				SetActorRotation(FMath::RInterpTo(GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 10.0f));
 
-		EnemyAIController->MoveToLocation(Destination);
+				FAIMoveRequest MoveRequest;
+				MoveRequest.SetGoalLocation(Destination);
+				MoveRequest.SetAcceptanceRadius(5.0f);
+
+				FNavPathSharedPtr NavPath;
+				EnemyAIController->MoveTo(MoveRequest, &NavPath);
+				return;
+			}
+		}
 	}
 }
 
 void AMovableEnemy::OnPlayerSeen(APawn* SeenPawn)
 {
-	if (SeenPawn == PlayerTank)
+	if (!PlayerTank || SeenPawn != PlayerTank) return;
+
+	if (HasLineOfSightToPlayer())
 	{
-		FVector StartLocation = GetActorLocation();
-		FVector EndLocation = PlayerTank->GetActorLocation();
+		bIsPlayerSeen = true;
 
-		FHitResult HitResult;
-		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(this);
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(PlayerTank);
+		MoveRequest.SetAcceptanceRadius(DistanceFromPlayer);
 
-		bool bHit = GetWorld()->LineTraceSingleByChannel(
-			HitResult,
-			StartLocation,
-			EndLocation,
-			ECC_Visibility,
-			CollisionParams
-		);
+		FNavPathSharedPtr NavPath;
+		EnemyAIController->MoveTo(MoveRequest, &NavPath);
 
-		if (!bHit || HitResult.GetActor() == PlayerTank)
+		GetWorld()->GetTimerManager().ClearTimer(LossOfSightTimer);
+	}
+}
+
+bool AMovableEnemy::HasLineOfSightToPlayer() const
+{
+	if (!PlayerTank) return false;
+
+	FVector StartLocation = GetActorLocation();
+	FVector EndLocation = PlayerTank->GetActorLocation();
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		StartLocation,
+		EndLocation,
+		ECC_Visibility,
+		CollisionParams
+	);
+
+	return !bHit || HitResult.GetActor() == PlayerTank;
+}
+
+void AMovableEnemy::CheckIfPlayerStillVisible()
+{
+	if (!HasLineOfSightToPlayer())
+	{
+		if (!GetWorld()->GetTimerManager().IsTimerActive(LossOfSightTimer))
 		{
-			bIsPlayerSeen = true;
-			EnemyAIController->MoveToActor(PlayerTank, DistanceFromPlayer);
-		}
-		else
-		{
-			RandomRoam();
-			bIsPlayerSeen = false;
+			GetWorld()->GetTimerManager().SetTimer(
+				LossOfSightTimer,
+				this,
+				&AMovableEnemy::LoseSightOfPlayer,
+				.5f,
+				false
+			);
 		}
 	}
 	else
 	{
-		RandomRoam();
-		bIsPlayerSeen = false;
+		GetWorld()->GetTimerManager().ClearTimer(LossOfSightTimer);
 	}
+}
+
+void AMovableEnemy::LoseSightOfPlayer()
+{
+	bIsPlayerSeen = false;
+	RandomRoam();
 }

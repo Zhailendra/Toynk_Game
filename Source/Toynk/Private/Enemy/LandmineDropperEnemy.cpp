@@ -10,10 +10,12 @@ void ALandmineDropperEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(TimerHandle_DropMineCooldown, this, &ABaseTank::DropLandMine, DropMineCooldown, true);
+	bIsNotFollowingPlayer = true;
 }
 
 void ALandmineDropperEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	DropLandMine();
 }

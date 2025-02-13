@@ -5,6 +5,7 @@
 #include "ObjectPoolIng/Poolable.h"
 #include "LandMine.generated.h"
 
+class ABlockingVolume;
 class USphereComponent;
 class UPoolSubsystem;
 class UNiagaraSystem;

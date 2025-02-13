@@ -8,6 +8,7 @@
 #include "ObjectPoolIng/PoolSubsystem.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Engine/BlockingVolume.h"
 #include "Level/Walls/BaseWall.h"
 #include "Tank/Bullet/Bullet.h"
 
