@@ -2,6 +2,7 @@
 #include "Common/ToynkGameMode.h"
 
 #include "Enemy/BaseEnemy.h"
+#include "Tank/PlayerTank.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
@@ -55,13 +56,17 @@ void UHealthComponent::DamageTaken(AActor* DamagedActor, float Damage, const UDa
 		}
 
 		ABaseEnemy* Enemy = Cast<ABaseEnemy>(DamagedActor);
-
 		if (Enemy) {
 			Enemy->GetToynkGameMode()->SetEnemyCount(Enemy->GetToynkGameMode()->GetEnemyCount() - 1);
 			Enemy->GetToynkGameInstance()->IncrementKillCount();
 		}
 
+		APlayerTank* Player = Cast<APlayerTank>(DamagedActor);
+		if (Player && OnDeath.IsBound())
+		{
+			OnDeath.Broadcast();
+		}
+
 		GetOwner()->Destroy();
 	}
 }
-

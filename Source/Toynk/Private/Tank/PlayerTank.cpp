@@ -32,7 +32,7 @@ void APlayerTank::BeginPlay()
 			ABase_Level* LevelActor = *It;
 			if (LevelActor)
 			{
-				PlayerController->SetViewTargetWithBlend(LevelActor, 1.3f);
+				PlayerController->SetViewTargetWithBlend(LevelActor, 0);
 				break;
 			}
 		}

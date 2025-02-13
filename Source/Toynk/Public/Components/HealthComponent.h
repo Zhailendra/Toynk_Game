@@ -7,6 +7,8 @@
 class UNiagaraSystem;
 class USoundCue;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathDelegate);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOYNK_API UHealthComponent : public UActorComponent
 {
@@ -18,6 +20,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SetCurrentHealth(float _health);
+
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDeathDelegate OnDeath;
 
 protected:
 	virtual void BeginPlay() override;
