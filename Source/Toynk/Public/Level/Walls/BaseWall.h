@@ -19,6 +19,8 @@ public:
 
 	void SpawnCoins() const;
 
+	void SetCoinsSpawnChance(float CoinsSpawnChance_);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -48,6 +50,6 @@ private:
 	UPoolSubsystem* PoolSubsystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	float CoinsSpawnChance = 0.1f;
+	float CoinsSpawnChance = 0.3f;
 
 };

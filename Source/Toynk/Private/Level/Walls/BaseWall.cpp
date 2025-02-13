@@ -52,3 +52,8 @@ void ABaseWall::SpawnCoins() const
 	}
 }
 
+void ABaseWall::SetCoinsSpawnChance(float CoinsSpawnChance_)
+{
+	CoinsSpawnChance = CoinsSpawnChance_;
+}
+
