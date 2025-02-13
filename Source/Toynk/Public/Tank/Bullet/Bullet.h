@@ -26,7 +26,10 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 		virtual void BeginPlay() override;
 		virtual void Tick(float DeltaTime) override;
 
-		void InitBullet(APawn* Pawn);
+		void InitBullet(APawn* Pawn, float _bulletSpeed, int _maxBounce);
+
+		void SetBulletSpeed(int _speed);
+		void SetBulletMaxBounce(int _bounce);
 
 		void ReturnToPool();
 	
@@ -49,6 +52,9 @@ class TOYNK_API ABullet : public AActor, public IPoolable
 
 		UPROPERTY(EditAnywhere, Category = "Bullet Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 		int MaxBounce = 1;
+
+		float RealBulletSpeed = 1500.0f;
+		int RealMaxBounce = 1;
 
 		int Bounce = 0;
 

@@ -7,7 +7,6 @@
 class UNiagaraSystem;
 class USoundCue;
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOYNK_API UHealthComponent : public UActorComponent
 {
@@ -17,6 +16,8 @@ public:
 	UHealthComponent();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void SetCurrentHealth(float _health);
 
 protected:
 	virtual void BeginPlay() override;

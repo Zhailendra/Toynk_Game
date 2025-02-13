@@ -12,6 +12,7 @@ class UBoxComponent;
 class UArrowComponent;
 class UNiagaraSystem;
 class USoundCue;
+class UHealthComponent;
 
 class AToynkGameMode;
 class ABullet;
@@ -80,7 +81,7 @@ protected:
 	USceneComponent* LandMineSpawnPoint;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	UActorComponent* HealthComponent;
+	UHealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* BoxComponent;
@@ -94,13 +95,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Cooldowns")
 	float DropMineCooldown = 3.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Tank Properties")
+	int MaxLandMines = 5;
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Common Properties")
 	float InterpSpeed = 5.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Tank Properties")
-	int MaxLandMines = 5;
 
 	UPROPERTY(EditAnywhere, Category = "Tank Properties")
 	int CurrentLandMines = 0;

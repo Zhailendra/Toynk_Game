@@ -165,7 +165,7 @@ void ABaseTank::Fire()
 			ProjectileSpawnPoint->GetComponentLocation(),
 			ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0),
 			this
-		)->InitBullet(this);
+		)->InitBullet(this, ToynkGameInstance->GetBulletVelocity(), ToynkGameInstance->GetBulletRicochet());
 
 		if (FireEffect)
 		{

@@ -3,27 +3,106 @@
 
 #include "Common/ToynkGameInstance.h"
 
+// GET
+
 int UToynkGameInstance::GetKillCount()
 {
-	return killCount;
+	return KillCount;
 }
 
 int UToynkGameInstance::GetLevel()
 {
-	return level;
+	return Level;
 }
+
+int UToynkGameInstance::GetCoins()
+{
+	return Coins;
+}
+
+int UToynkGameInstance::GetBulletRicochet()
+{
+	return BulletRicochet;
+}
+
+float UToynkGameInstance::GetBulletVelocity()
+{
+	return BulletVelocity;
+}
+
+int UToynkGameInstance::GetMoveSpeed()
+{
+	return MoveSpeed;
+}
+
+int UToynkGameInstance::GetHealth()
+{
+	return Health;
+}
+
+float UToynkGameInstance::GetCoinRate()
+{
+	return CoinRate;
+}
+
+int UToynkGameInstance::GetMaxMines()
+{
+	return MaxMines;
+}
+
+// SET
 
 void UToynkGameInstance::IncrementKillCount()
 {
-	killCount++;
+	KillCount++;
 }
 
 void UToynkGameInstance::GoToNextLevel()
 {
-	level++;
+	Level++;
 }
 
-void UToynkGameInstance::GoToLevel(int _level)
+void UToynkGameInstance::GoToLevel(int _Level)
 {
-	level = _level;
+	Level = _Level;
+}
+
+void UToynkGameInstance::AddCoins(int _amount)
+{
+	Coins += _amount;
+}
+
+void UToynkGameInstance::RemoveCoins(int _amount)
+{
+	Coins -= _amount;
+}
+
+void UToynkGameInstance::UpgradeBulletRicochet(int _amount)
+{
+	BulletRicochet += _amount;
+}
+
+void UToynkGameInstance::UpgradeBulletVelocity(float _amount)
+{
+	BulletVelocity += _amount;
+}
+
+void UToynkGameInstance::UpgradeMoveSpeed(int _amount)
+{
+	MoveSpeed += _amount;
+}
+
+void UToynkGameInstance::UpgradeHealth(int _amount)
+{
+	Health += _amount;
+}
+
+void UToynkGameInstance::UpgradeCoinRate(float _amount)
+{
+	CoinRate += _amount;
+}
+
+void UToynkGameInstance::UpgradeMaxMines(int _amount)
+{
+	MaxMines = _amount;
 }

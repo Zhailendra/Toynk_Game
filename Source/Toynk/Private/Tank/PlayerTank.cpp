@@ -2,11 +2,14 @@
 
 #include "Level/Base_Level.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "EngineUtils.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Common/Coins.h"
 #include "Components/BoxComponent.h"
+#include "Components/HealthComponent.h"
+#include "Tank/Bullet/Bullet.h"
 
 class ABase_Level;
 
@@ -35,6 +38,8 @@ void APlayerTank::BeginPlay()
 		}
 	}
 
+	SetDefaultPlayerValues();
+
 	if (const auto TankPlayerController = Cast<APlayerController>(GetController()))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(TankPlayerController->GetLocalPlayer()))
@@ -51,6 +56,15 @@ void APlayerTank::Tick(float DeltaTime)
 	if (CurrentVelocity.IsNearlyZero())
 	{
 		CurrentVelocity = FVector::ZeroVector;
+	}
+}
+
+void APlayerTank::SetDefaultPlayerValues()
+{
+	if (ToynkGameInstance) {
+		GetCharacterMovement()->MaxWalkSpeed = ToynkGameInstance->GetMoveSpeed();
+		HealthComponent->SetCurrentHealth(ToynkGameInstance->GetHealth());
+		MaxLandMines = ToynkGameInstance->GetMaxMines();
 	}
 }
 

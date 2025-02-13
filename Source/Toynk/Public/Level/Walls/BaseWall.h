@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "BaseWall.generated.h"
 
+class UToynkGameInstance;
 class UPoolSubsystem;
 
 class ACoins;
@@ -27,6 +28,8 @@ protected:
 
 
 private:
+	UPROPERTY()
+	UToynkGameInstance* ToynkGameInstance;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* SceneComponent;
