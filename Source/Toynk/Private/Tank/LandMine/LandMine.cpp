@@ -73,19 +73,17 @@ void ALandMine::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
-void ALandMine::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
- 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
- {
+void ALandMine::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
 	{
 		if (OtherActor == GetOwner())
 		{
-			bIsArmed = true;
+			GetWorld()->GetTimerManager().SetTimer(TimerWaitForArmed, this, &ALandMine::ArmBomb, .5f, false);
 			SetActorHiddenInGame(false);
-			StartTimer();
 		}
 	}
- }
+}
 
 void ALandMine::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -185,6 +183,12 @@ void ALandMine::PlayTickSound()
 	{
 		GetWorld()->GetTimerManager().SetTimer(TickSoundTimerHandle, this, &ALandMine::PlayTickSound, NewInterval, false);
 	}
+}
+
+void ALandMine::ArmBomb()
+{
+	bIsArmed = true;
+	StartTimer();
 }
 
 void ALandMine::OnSpawnFromPool_Implementation()

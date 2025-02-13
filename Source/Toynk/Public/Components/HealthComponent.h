@@ -26,6 +26,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float MaxHealth = 100.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Properties", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float CurrentHealth = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Properties")

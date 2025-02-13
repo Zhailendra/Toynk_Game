@@ -31,6 +31,7 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 	
 		void Explode();
 		void PlayTickSound();
+		void ArmBomb();
 
 	protected:
 		virtual void BeginPlay() override;
@@ -82,6 +83,7 @@ class TOYNK_API ALandMine : public AActor, public IPoolable
 		UPROPERTY(EditAnywhere, Category = "Sound Properties")
 		USoundCue* TickTickSound;
 
+		FTimerHandle TimerWaitForArmed;
 		FTimerHandle TimerHandle_LifeTime;
 		FTimerHandle TickSoundTimerHandle;
 
