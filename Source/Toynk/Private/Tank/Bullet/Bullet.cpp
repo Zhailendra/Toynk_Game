@@ -151,7 +151,6 @@ void ABullet::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 		PlaySound();
 		StartEffect();
 		ReturnToPool();
-		PoolSubsystem->ReturnToPool(OtherActor);
 	}
 }
 
