@@ -158,14 +158,14 @@ void ABaseTank::Fire()
 
 	bCanFire = false;
 
-	if (Controller && PoolSubsystem)
+	if (Controller && PoolSubsystem && BulletClass)
 	{
 		PoolSubsystem->SpawnFromPool<ABullet>(
 			BulletClass,
 			ProjectileSpawnPoint->GetComponentLocation(),
 			ProjectileSpawnPoint->GetComponentRotation() - FRotator(0, 90, 0),
 			this
-		)->InitBullet(this);
+		)->InitBullet(this, ToynkGameInstance->GetBulletVelocity(), ToynkGameInstance->GetBulletRicochet());
 
 		if (FireEffect)
 		{
@@ -196,7 +196,7 @@ void ABaseTank::DropLandMine()
 
 	bCanDropMine = false;
 
-	if (Controller && PoolSubsystem && CurrentLandMines < MaxLandMines)
+	if (Controller && PoolSubsystem && CurrentLandMines < MaxLandMines && LandMineClass)
 	{
 		CurrentLandMines++;
 		PoolSubsystem->SpawnFromPool<ALandMine>(

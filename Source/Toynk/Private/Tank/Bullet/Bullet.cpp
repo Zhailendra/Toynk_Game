@@ -49,7 +49,7 @@ void ABullet::Tick(float DeltaTime)
 	if (!bIsActive) return;
 
 	FVector Start = BoxComponent->GetComponentLocation();
-	FVector End = Start + (GetActorForwardVector() * BulletSpeed * DeltaTime);
+	FVector End = Start + (GetActorForwardVector() * RealBulletSpeed * DeltaTime);
 
 	FHitResult HitResult;
 	FCollisionQueryParams CollisionParams;
@@ -63,7 +63,7 @@ void ABullet::Tick(float DeltaTime)
 
 		UHealthComponent* HealthComp = (OtherActor) ? OtherActor->FindComponentByClass<UHealthComponent>() : nullptr;
 
-		if (Bounce < MaxBounce && !HealthComp) 
+		if (Bounce < RealMaxBounce && !HealthComp) 
 		{
 			Bounce++;
 
@@ -155,9 +155,30 @@ void ABullet::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor
 	}
 }
 
-void ABullet::InitBullet(APawn* Pawn)
+void ABullet::InitBullet(APawn* Pawn, float _bulletSpeed, int _maxBounce)
 {
+	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
 	SetOwner(Pawn);
+
+	if (Pawn == PlayerPawn) {
+		SetBulletSpeed(_bulletSpeed);
+		SetBulletMaxBounce(_maxBounce);
+	}
+	else {
+		SetBulletSpeed(BulletSpeed);
+		SetBulletMaxBounce(MaxBounce);
+	}
+}
+
+void ABullet::SetBulletSpeed(int _speed)
+{
+	RealBulletSpeed = _speed;
+}
+
+void ABullet::SetBulletMaxBounce(int _bounce)
+{
+	RealMaxBounce = _bounce;
 }
 
 void ABullet::ReturnToPool()

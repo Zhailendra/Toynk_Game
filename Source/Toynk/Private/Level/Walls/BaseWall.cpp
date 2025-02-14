@@ -4,6 +4,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/HealthComponent.h"
 #include "ObjectPoolIng/PoolSubsystem.h"
+#include "Common/ToynkGameInstance.h"
 
 ABaseWall::ABaseWall()
 {
@@ -30,6 +31,12 @@ void ABaseWall::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ToynkGameInstance = Cast<UToynkGameInstance>(GetGameInstance());
+
+	if (ToynkGameInstance) {
+		SetCoinsSpawnChance(ToynkGameInstance->GetCoinRate());
+	}
+
 	PoolSubsystem = GetWorld()->GetSubsystem<UPoolSubsystem>();
 }
 
@@ -50,5 +57,10 @@ void ABaseWall::SpawnCoins() const
 			nullptr
 		);
 	}
+}
+
+void ABaseWall::SetCoinsSpawnChance(float CoinsSpawnChance_)
+{
+	CoinsSpawnChance = CoinsSpawnChance_;
 }
 

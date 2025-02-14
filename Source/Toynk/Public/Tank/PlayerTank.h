@@ -28,6 +28,8 @@ public:
 protected:
 
 	void Move(const FInputActionValue& Value);
+	void SetDefaultPlayerValues();
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Coins", BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

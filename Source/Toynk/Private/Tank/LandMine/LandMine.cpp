@@ -8,6 +8,7 @@
 #include "ObjectPoolIng/PoolSubsystem.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Engine/BlockingVolume.h"
 #include "Level/Walls/BaseWall.h"
 #include "Tank/Bullet/Bullet.h"
 
@@ -72,19 +73,17 @@ void ALandMine::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 	}
 }
 
-void ALandMine::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
- 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
- {
+void ALandMine::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 	if (OtherActor && OtherActor->ActorHasTag("DestroyableActor"))
 	{
 		if (OtherActor == GetOwner())
 		{
-			bIsArmed = true;
+			GetWorld()->GetTimerManager().SetTimer(TimerWaitForArmed, this, &ALandMine::ArmBomb, .5f, false);
 			SetActorHiddenInGame(false);
-			StartTimer();
 		}
 	}
- }
+}
 
 void ALandMine::OnCapsuleOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -186,6 +185,12 @@ void ALandMine::PlayTickSound()
 	}
 }
 
+void ALandMine::ArmBomb()
+{
+	bIsArmed = true;
+	StartTimer();
+}
+
 void ALandMine::OnSpawnFromPool_Implementation()
 {
 	SetActorHiddenInGame(true);
@@ -196,7 +201,7 @@ void ALandMine::OnSpawnFromPool_Implementation()
 	LifeTimeRemaining = LifeTime;
 	
 	if (DeploySound != nullptr) {
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), DeploySound, GetActorLocation(), 0.2);
 	}
 }
 

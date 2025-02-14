@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "BaseWall.generated.h"
 
+class UToynkGameInstance;
 class UPoolSubsystem;
 
 class ACoins;
@@ -19,12 +20,16 @@ public:
 
 	void SpawnCoins() const;
 
+	void SetCoinsSpawnChance(float CoinsSpawnChance_);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 
 private:
+	UPROPERTY()
+	UToynkGameInstance* ToynkGameInstance;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* SceneComponent;
@@ -48,6 +53,6 @@ private:
 	UPoolSubsystem* PoolSubsystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-	float CoinsSpawnChance = 0.1f;
+	float CoinsSpawnChance = 0.3f;
 
 };

@@ -24,7 +24,15 @@ class TOYNK_API AMovableEnemy : public ABaseEnemy
 		UFUNCTION()
 		void OnPlayerSeen(APawn* SeenPawn);
 	
-	private:
+		bool HasLineOfSightToPlayer() const;
+		void CheckIfPlayerStillVisible();
+		void LoseSightOfPlayer();
+
+		void RandomRoam();
+
+		bool bIsNotFollowingPlayer = false;
+
+private:
 		UPROPERTY()
 		AAIController* EnemyAIController;
 
@@ -33,12 +41,18 @@ class TOYNK_API AMovableEnemy : public ABaseEnemy
 
 		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
 		UFloatingPawnMovement* MovementComponent;
+
+		FTimerHandle TimerHandle_RandomMove;
+		FTimerHandle LossOfSightTimer;
 	
 		UPROPERTY(EditAnywhere, Category = "Movement")
-		float MoveSpeed = 50.f;
+		float EnemySpeed = 50.f;
 
 		UPROPERTY(EditAnywhere, Category = "Movement")
 		float DistanceFromPlayer = 500.f;
 
 		bool bIsPlayerSeen = false;
+
+		float RotationSpeed = 5.0f;
+
 };
